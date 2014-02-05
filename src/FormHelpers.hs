@@ -6,45 +6,51 @@ module FormHelpers
        , makeFormSplices
        ) where
 
-import           Data.Monoid
-import           Data.Text (Text)
-import           Heist
-import           Text.Digestive
-import           Text.Digestive.Snap
-import qualified Data.Text      as T
-import qualified Text.XmlHtml   as X
+import Data.Monoid
+import Heist
 import qualified Heist.Compiled as C
+import Text.Digestive
+import Text.Digestive.Snap
+import Data.Text (Text)
+import qualified Data.Text as T
+import qualified Text.XmlHtml as X
 import qualified Text.Digestive.Heist.Compiled as DF
-import           Control.Monad             (liftM)
-import           Text.Digestive.View       (errors)
-import           Data.Maybe                (fromMaybe)
-import           Control.Monad             (mplus)
-import           Data.Function             (on)
-import           Data.List                 (unionBy)
-import           Snap.Core                 (MonadSnap)
-import           Control.Monad.Trans.Class (lift)
+import Text.Digestive.View (errors)
+import Control.Monad (liftM)
+import Data.Maybe (fromMaybe)
+import Control.Monad (mplus)
+import Data.Function (on)
+import Data.List (unionBy)
+import Snap.Core (MonadSnap)
+import Control.Monad.Trans.Class (lift)
 
 ------------------------------------------------------------------------------
 
--- api could use some work.
+-- reduces boilerplate for creating forms that share the <captured> node and
+-- checkerror attribute splice
 makeFormSplices :: (Monad m, MonadSnap m)
-                => Text
-                -> Form Text m v
-                -> (Maybe v -> Text)
-                -> Splices (C.Splice m)
+                => Text                   -- node name/form identifier
+                -> Form Text m v          -- the form to process
+                -> (Maybe v -> Text)      -- convert Maybe results to Text
+                -> Splices (C.Splice m)   -- the compiled splices we return
 makeFormSplices node form handleResult = do
   let processed = runForm node form
-  let view      = liftM fst processed
-  let res       = liftM snd processed
+      view      = liftM fst processed
+      res       = liftM snd processed
   node          ## DF.formSplice' extraDigestiveSplices checkError (lift view)
   "captured"    ## (C.pureSplice . C.textSplice) handleResult $ (lift res)
 
 
-checkErrorRefs :: Monad m => RuntimeSplice m (View Text) -> Text -> RuntimeSplice m [(Text, Text)]
+-- creates an attribute splice by checking the attribute's value (a field path
+-- reference) against a list of all paths with errors
+checkErrorRefs :: Monad m
+               => RuntimeSplice m (View Text)    -- the form view
+               -> Text                           -- the attribute value
+               -> RuntimeSplice m [(Text, Text)] -- the splice to return
 checkErrorRefs getView ref = do
   view <- getView
-  let errors = getErrorRefs view  -- RENAME!!
-  let attrs = if ref `elem` errors then [("class", "error")] else []
+  let errorPaths = getErrorRefs view
+  let attrs     = if ref `elem` errorPaths then [("class", "error")] else []
   return attrs
 
 -- rename to reflect multiple attr splices like defaultAttrSplices
