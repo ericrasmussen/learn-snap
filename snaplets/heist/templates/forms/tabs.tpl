@@ -17,7 +17,7 @@
 
   <div class="tabs-content">
 
-    <div class="content active" id="panel2-1">
+    <div class="content active" id="panel2-1" style="color:#008CBA;">
       <captured>None</captured>
     </div>
 
