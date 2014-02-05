@@ -23,6 +23,8 @@ import Data.Function (on)
 import Data.List (unionBy)
 import Snap.Core (MonadSnap)
 import Control.Monad.Trans.Class (lift)
+import Data.Set (Set)
+import qualified Data.Set as Set
 
 ------------------------------------------------------------------------------
 
@@ -37,8 +39,21 @@ makeFormSplices node form handleResult = do
   let processed = runForm node form
       view      = liftM fst processed
       res       = liftM snd processed
-  node          ## DF.formSplice' extraDigestiveSplices checkError (lift view)
+  node          ## DF.formSplice' extraDigestiveSplices attrSplices (lift view)
   "captured"    ## (C.pureSplice . C.textSplice) handleResult $ (lift res)
+
+
+-- when digestiveSplices just aren't enough
+extraDigestiveSplices :: (Monad m) => RuntimeSplice m (View Text) -> Splices (C.Splice m)
+extraDigestiveSplices v = do
+    "dfLabelError"  ## dfLabelError  v
+    "dfSmallErrors" ## dfSmallErrors v
+
+
+-- shared attribute splices for all our forms (currently only "checkerror")
+attrSplices :: Monad m => RuntimeSplice m (View Text) -> Splices (AttrSplice m)
+attrSplices getView = do
+  "checkerror" ## checkErrorRefs getView
 
 
 -- creates an attribute splice by checking the attribute's value (a field path
@@ -49,18 +64,20 @@ checkErrorRefs :: Monad m
                -> RuntimeSplice m [(Text, Text)] -- the splice to return
 checkErrorRefs getView ref = do
   view <- getView
-  let errorPaths = getErrorRefs view
-  let attrs     = if ref `elem` errorPaths then [("class", "error")] else []
+  let refs  = getErrorSet view
+      attrs = if ref `Set.member` refs then [("class", "error")] else []
   return attrs
 
--- rename to reflect multiple attr splices like defaultAttrSplices
-checkError :: Monad m => RuntimeSplice m (View Text) -> Splices (AttrSplice m)
-checkError getView = do
-  "checkerror" ## checkErrorRefs getView
 
--- lists all the paths with errors
-getErrorRefs :: View v -> [Text]
-getErrorRefs = concatMap fst . viewErrors
+-- creates a Set containing all form field paths with errors
+getErrorSet :: View v -> Set Text
+getErrorSet = Set.fromList . concatMap fst . viewErrors
+
+
+
+
+-- * everything below needs refactoring
+
 
 -- messy test for a custom label splice
 dfLabelError :: Monad m => RuntimeSplice m (View v) -> C.Splice m
@@ -102,11 +119,6 @@ maybeAddError attrs          = attrs
 
 addErrorClass :: [(Text, Text)] -> [(Text, Text)]
 addErrorClass = map maybeAddError
-
-extraDigestiveSplices :: (Monad m) => RuntimeSplice m (View Text) -> Splices (C.Splice m)
-extraDigestiveSplices v = do
-    "dfLabelError"  ## dfLabelError  v
-    "dfSmallErrors" ## dfSmallErrors v
 
 
 -- borrowed from digestive-functors source. can be reworked for what we need
