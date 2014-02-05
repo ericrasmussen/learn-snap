@@ -1,9 +1,7 @@
 {-# LANGUAGE OverloadedStrings, TemplateHaskell, FlexibleContexts #-}
 
 module FormHelpers
-       ( extraDigestiveSplices
-       , checkError
-       , makeFormSplices
+       ( makeFormSplices
        ) where
 
 import Data.Monoid
@@ -18,9 +16,6 @@ import qualified Text.Digestive.Heist.Compiled as DF
 import Text.Digestive.View (errors)
 import Control.Monad (liftM)
 import Data.Maybe (fromMaybe)
-import Control.Monad (mplus)
-import Data.Function (on)
-import Data.List (unionBy)
 import Snap.Core (MonadSnap)
 import Control.Monad.Trans.Class (lift)
 import Data.Set (Set)
@@ -74,6 +69,11 @@ getErrorSet :: View v -> Set Text
 getErrorSet = Set.fromList . concatMap fst . viewErrors
 
 
+-- checks if a form view has an error for the supplied field ref
+fieldHasError :: Text -> View v -> Bool
+fieldHasError ref = not . null . errors ref
+
+
 
 
 -- * everything below needs refactoring
@@ -83,63 +83,33 @@ getErrorSet = Set.fromList . concatMap fst . viewErrors
 dfLabelError :: Monad m => RuntimeSplice m (View v) -> C.Splice m
 dfLabelError getView = do
     node <- getParamNode
-    let (ref, attrs) = getRefAttributes node Nothing
-    runAttrs <- C.runAttributesRaw attrs
+    let (ref, _) = getRefAttrs node
     return $ C.yieldRuntime $ do
         view <- getView
-        let hasError = fieldHasError ref view
-        attrs' <- runAttrs
-        let ref'     = absoluteRef ref view
-        let attrs''  = if hasError then addErrorClass attrs' else attrs'
-        let allAttrs = addAttrs attrs'' [("for", ref')]
-        let e        = makeElement "label" (X.childNodes node) $ allAttrs
-        return $ X.renderHtmlFragment X.UTF8 e
+        let ref'   = absoluteRef ref view
+            style  = if fieldHasError ref view then "inline error" else "inline"
+            attrs' = [("for", ref'), ("class", style)]
+            label  = X.Element "label" attrs' (X.childNodes node)
+        return $ X.renderHtmlFragment X.UTF8 [label]
 
 -- messy test for a custom error list splice
 dfSmallErrors :: Monad m => RuntimeSplice m (View T.Text) -> C.Splice m
 dfSmallErrors getView = do
     node <- getParamNode
-    let (ref, attrs) = getRefAttributes node Nothing
+    let (ref, attrs) = getRefAttrs node
     runAttrs <- C.runAttributesRaw attrs
     return $ C.yieldRuntime $ do
-        view <- getView
+        view   <- getView
         attrs' <- runAttrs
-        let es = errors ref view
-        let errorText = T.intercalate ", " es
-        let elem = makeElement "small" [X.TextNode errorText] attrs' -- RENAME
-        if null es then return mempty else return (X.renderHtmlFragment X.UTF8 elem)
+        let es        = errors ref view
+            errorText = T.intercalate ", " es
+            small     = X.Element"small" attrs' [X.TextNode errorText]
+        if null es then return mempty else return (X.renderHtmlFragment X.UTF8 [small])
 
 
-fieldHasError :: Text -> View v -> Bool
-fieldHasError ref view = not . null $ errors ref view
 
-maybeAddError :: (Text, Text) -> (Text, Text)
-maybeAddError ("class", val) = ("class", T.append val " error")
-maybeAddError attrs          = attrs
+getRefAttrs :: X.Node -> (T.Text, [(T.Text, T.Text)])
+getRefAttrs (X.Element _ as _) = let ref = fromMaybe (error $ "missing ref") $ lookup "ref" as
+                                      in (ref, filter ((/= "ref") . fst) as)
+getRefAttrs _                  = (error "Wrong type of node!", [])
 
-addErrorClass :: [(Text, Text)] -> [(Text, Text)]
-addErrorClass = map maybeAddError
-
-
--- borrowed from digestive-functors source. can be reworked for what we need
-
-makeElement :: T.Text -> [X.Node] -> [(T.Text, T.Text)] -> [X.Node]
-makeElement name nodes = return . flip (X.Element name) nodes
-
-getRefAttributes :: X.Node
-                 -> Maybe T.Text              -- ^ Optional default ref
-                 -> (T.Text, [(T.Text, T.Text)])  -- ^ (Ref, other attrs)
-getRefAttributes node defaultRef =
-    case node of
-        X.Element _ as _ ->
-            let ref = fromMaybe (error $ show node ++ ": missing ref") $
-                        lookup "ref" as `mplus` defaultRef
-            in (ref, filter ((/= "ref") . fst) as)
-        _                -> (error "Wrong type of node!", [])
-
-
--- | Does not override existing attributes
-addAttrs :: [(Text, Text)]  -- ^ Original attributes
-         -> [(Text, Text)]  -- ^ Attributes to add
-         -> [(Text, Text)]  -- ^ Resulting attributes
-addAttrs = unionBy (on (==) fst)
