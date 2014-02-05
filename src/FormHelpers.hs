@@ -26,10 +26,10 @@ import qualified Data.Set as Set
 -- reduces boilerplate for creating forms that share the <captured> node and
 -- checkerror attribute splice
 makeFormSplices :: (Monad m, MonadSnap m)
-                => Text                   -- node name/form identifier
-                -> Form Text m v          -- the form to process
-                -> (Maybe v -> Text)      -- convert Maybe results to Text
-                -> Splices (C.Splice m)   -- the compiled splices we return
+                => Text                   -- ^ node name/form identifier
+                -> Form Text m v          -- ^ the form to process
+                -> (Maybe v -> Text)      -- ^ convert Maybe results to Text
+                -> Splices (C.Splice m)   -- ^ the compiled splices we return
 makeFormSplices node form handleResult = do
   let processed = runForm node form
       view      = liftM fst processed
@@ -72,7 +72,6 @@ getErrorSet = Set.fromList . concatMap fst . viewErrors
 -- checks if a form view has an error for the supplied field ref
 fieldHasError :: Text -> View v -> Bool
 fieldHasError ref = not . null . errors ref
-
 
 
 -- similar to the dfLabel splice from digestive-functors, but will conditionally
