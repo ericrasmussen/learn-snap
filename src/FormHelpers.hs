@@ -41,8 +41,8 @@ makeFormSplices node form handleResult = do
 -- when digestiveSplices just aren't enough
 extraDigestiveSplices :: (Monad m) => RuntimeSplice m (View Text) -> Splices (C.Splice m)
 extraDigestiveSplices v = do
-    "dfLabelError"  ## dfLabelError  v
-    "dfSmallErrors" ## dfSmallErrors v
+    "dfLabelError"   ## dfLabelError  v
+    "dfErrorsInline" ## dfErrorsInline v
 
 
 -- shared attribute splices for all our forms (currently only "checkerror")
@@ -93,17 +93,15 @@ dfLabelError getView = do
         return $ X.renderHtmlFragment X.UTF8 [label]
 
 -- messy test for a custom error list splice
-dfSmallErrors :: Monad m => RuntimeSplice m (View T.Text) -> C.Splice m
-dfSmallErrors getView = do
+dfErrorsInline :: Monad m => RuntimeSplice m (View T.Text) -> C.Splice m
+dfErrorsInline getView = do
     node <- getParamNode
-    let (ref, attrs) = getRefAttrs node
-    runAttrs <- C.runAttributesRaw attrs
+    let (ref, _) = getRefAttrs node
     return $ C.yieldRuntime $ do
         view   <- getView
-        attrs' <- runAttrs
         let es        = errors ref view
             errorText = T.intercalate ", " es
-            small     = X.Element"small" attrs' [X.TextNode errorText]
+            small     = X.Element "small" [("class", "error")] [X.TextNode errorText]
         if null es then return mempty else return (X.renderHtmlFragment X.UTF8 [small])
 
 

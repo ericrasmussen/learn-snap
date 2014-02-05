@@ -5,7 +5,7 @@
 
         <dfLabelError ref="textinput">Text: </dfLabelError>
         <dfInputText ref="textinput" checkerror="textinput" />
-        <dfSmallErrors ref="textinput" class="error" />
+        <dfErrorsInline ref="textinput" />
 
       <dfInputSubmit value="Submit" />
 
