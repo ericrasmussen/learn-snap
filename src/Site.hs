@@ -19,7 +19,7 @@ import           Application
 import           Heist
 import qualified Heist.Compiled as C
 import           Data.Monoid
-import           Snap.Types (MonadSnap)
+import           Snap.Core (MonadSnap)
 
 -- these imports are from our standalone modules in src/handlers
 import           TextInput (textInputHandler, textInputSplices)
