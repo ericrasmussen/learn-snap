@@ -83,7 +83,7 @@ fieldHasError ref = not . null . errors ref
 dfLabelError :: Monad m => RuntimeSplice m (View v) -> C.Splice m
 dfLabelError getView = do
     node <- getParamNode
-    let (ref, _) = getRefAttrs node
+    let ref = getRef node
     return $ C.yieldRuntime $ do
         view <- getView
         let ref'   = absoluteRef ref view
@@ -92,11 +92,12 @@ dfLabelError getView = do
             label  = X.Element "label" attrs' (X.childNodes node)
         return $ X.renderHtmlFragment X.UTF8 [label]
 
+
 -- messy test for a custom error list splice
 dfErrorsInline :: Monad m => RuntimeSplice m (View T.Text) -> C.Splice m
 dfErrorsInline getView = do
     node <- getParamNode
-    let (ref, _) = getRefAttrs node
+    let ref = getRef node
     return $ C.yieldRuntime $ do
         view   <- getView
         let es        = errors ref view
@@ -105,9 +106,13 @@ dfErrorsInline getView = do
         if null es then return mempty else return (X.renderHtmlFragment X.UTF8 [small])
 
 
-
-getRefAttrs :: X.Node -> (T.Text, [(T.Text, T.Text)])
-getRefAttrs (X.Element _ as _) = let ref = fromMaybe (error $ "missing ref") $ lookup "ref" as
-                                      in (ref, filter ((/= "ref") . fst) as)
-getRefAttrs _                  = (error "Wrong type of node!", [])
+-- partial function to lookup the value of a given node's "ref" attribute.
+-- if that value is not supplied then we cannot render the template.
+-- (the use of error here is unfortunate, but consistent with
+-- digestive-functor's own internal Heist usage)
+getRef :: X.Node -> T.Text
+getRef node = case node of
+  (X.Element _ attrs _) -> fromMaybe showError $ lookup "ref" attrs
+    where showError = error $ "missing ref in node: " ++ show node
+  _                  -> error "Wrong type of node!"
 
