@@ -37,6 +37,7 @@ Executable digestive-heist-demos
     time                      >= 1.1     && < 1.5,
     transformers              >= 0.2     && < 0.4,
     xmlhtml                   >= 0.1,
+    containers                >= 0.5,
     digestive-functors        == 0.6.2.0,
     digestive-functors-snap   == 0.6.0.1,
     digestive-functors-heist  == 0.8.3.0
