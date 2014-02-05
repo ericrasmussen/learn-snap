@@ -48,12 +48,12 @@ import FormHelpers
 data SomeText = SomeText Text
   deriving Show
 
--- define a way to render a maybe result as Text
+-- define a way to render a Maybe result as Text
 maybeSomeText :: Maybe SomeText -> Text
 maybeSomeText Nothing  = "None"
 maybeSomeText (Just t) = T.pack . show $ t
 
--- optionally create predicates to check results
+-- optionally create predicates to validate results
 checkText :: Text -> Bool
 checkText "" = False
 checkText _  = True
