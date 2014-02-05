@@ -75,21 +75,17 @@ fieldHasError ref = not . null . errors ref
 
 
 
-
--- * everything below needs refactoring
-
-
--- messy test for a custom label splice
+-- similar to the dfLabel splice from digestive-functors, but will conditionally
+-- add an error class if the referenced node has an error in the form view
 dfLabelError :: Monad m => RuntimeSplice m (View v) -> C.Splice m
 dfLabelError getView = do
     node <- getParamNode
     let ref = getRef node
     return $ C.yieldRuntime $ do
         view <- getView
-        let ref'   = absoluteRef ref view
-            style  = if fieldHasError ref view then "inline error" else "inline"
-            attrs' = [("for", ref'), ("class", style)]
-            label  = X.Element "label" attrs' (X.childNodes node)
+        let style = if fieldHasError ref view then "inline error" else "inline"
+            attrs = [("for", absoluteRef ref view), ("class", style)]
+            label = X.Element "label" attrs (X.childNodes node)
         return $ X.renderHtmlFragment X.UTF8 [label]
 
 
