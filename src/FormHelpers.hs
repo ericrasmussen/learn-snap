@@ -88,17 +88,22 @@ dfLabelError getView = do
         return $ X.renderHtmlFragment X.UTF8 [label]
 
 
--- messy test for a custom error list splice
+-- similar to the dfErrorList splice from digestive-functors, but renders the
+-- error list as comma separted text in a <small> tag
 dfErrorsInline :: Monad m => RuntimeSplice m (View T.Text) -> C.Splice m
 dfErrorsInline getView = do
     node <- getParamNode
     let ref = getRef node
     return $ C.yieldRuntime $ do
         view   <- getView
-        let es        = errors ref view
-            errorText = T.intercalate ", " es
-            small     = X.Element "small" [("class", "error")] [X.TextNode errorText]
-        if null es then return mempty else return (X.renderHtmlFragment X.UTF8 [small])
+        let errorList = errors ref view
+            errorText = T.intercalate ", " errorList
+            attrs     = [("class", "error")]
+            small     = X.Element "small" attrs [X.TextNode errorText]
+        -- only render the element if we have one or more errors
+        case errorList of
+          [] -> return mempty
+          _  -> return (X.renderHtmlFragment X.UTF8 [small])
 
 
 -- partial function to lookup the value of a given node's "ref" attribute.
