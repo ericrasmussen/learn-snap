@@ -7,6 +7,8 @@ module FormHelpers
 import Data.Monoid
 import Heist
 import qualified Heist.Compiled as C
+import Data.ByteString (ByteString)
+import Data.Text.Encoding (encodeUtf8)
 import Text.Digestive
 import Text.Digestive.Snap
 import Data.Text (Text)
@@ -23,6 +25,20 @@ import qualified Data.Set as Set
 
 ------------------------------------------------------------------------------
 
+{-
+
+Note: this API needs to be reconsidered. Currently it assumes that the form
+module name (ex: TextInput.hs) and the corresponding form template name (ex:
+textinput.tpl) will be the same after stripping the extension and converting
+them to lowercase.
+
+However, this is a reasonable assumption for now (it's an internal API and
+will fail at load time if the templates are missing), but a bit fragile if
+this continues to grow.
+
+-}
+
+
 -- reduces boilerplate for creating forms that share the <captured> node and
 -- checkerror attribute splice
 makeFormSplices :: (Monad m, MonadSnap m)
@@ -31,11 +47,29 @@ makeFormSplices :: (Monad m, MonadSnap m)
                 -> (Maybe v -> Text)      -- ^ convert Maybe results to Text
                 -> Splices (C.Splice m)   -- ^ the compiled splices we return
 makeFormSplices node form handleResult = do
-  let processed = runForm node form
-      view      = liftM fst processed
-      res       = liftM snd processed
-  node          ## DF.formSplice' extraDigestiveSplices attrSplices (lift view)
-  "captured"    ## (C.pureSplice . C.textSplice) handleResult $ (lift res)
+  let processed  = runForm node form
+      view       = liftM fst processed
+      res        = liftM snd processed
+  node           ## DF.formSplice' extraDigestiveSplices attrSplices (lift view)
+  "captured"     ## (C.pureSplice . C.textSplice) handleResult $ (lift res)
+  "formCode"     ## templateSplice node Code
+  "templateCode" ## templateSplice node HTML
+
+
+-- to avoid passing around Strings for the folder locations
+data SnippetDir = Code | HTML
+
+
+-- creates a ByteString representing the relative path to the Heist template
+makeByteStringPath :: Text -> SnippetDir -> ByteString
+makeByteStringPath name dir = encodeUtf8 $ T.concat [base dir, T.toLower name]
+  where base Code = "/code/"
+        base HTML = "/html/"
+
+
+-- creates a compiled Splice from a template
+templateSplice :: (Monad m, MonadSnap m) => Text -> SnippetDir -> C.Splice m
+templateSplice name dir = C.callTemplate $ makeByteStringPath name dir
 
 
 -- when digestiveSplices just aren't enough
