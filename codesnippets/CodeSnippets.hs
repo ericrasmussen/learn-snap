@@ -1,3 +1,4 @@
+import Data.Char (toLower)
 import Control.Applicative ((<$>))
 import System.FilePath ((</>), takeExtension, replaceExtension)
 import System.Directory (getDirectoryContents, getCurrentDirectory)
@@ -51,8 +52,8 @@ highlight lang code = renderHtml fragment
 highlightFiles :: String -> String -> String -> IO ()
 highlightFiles path ext destination = do
   files <- getSourceFiles path ext
-  mapM_ (readAndWriteFile path destination) files
-
+  let lowercased = map (map toLower) files
+  mapM_ (readAndWriteFile path destination) lowercased
 
 -- preprocess all the relevant hs and tpl files
 main = do
