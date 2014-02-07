@@ -22,11 +22,11 @@
     </div>
 
     <div class="content" id="panel2-2">
-      <p>code code code</p>
+      <formCode/>
     </div>
 
     <div class="content" id="panel2-3">
-      <p>template template template</p>
+      <templateCode/>
     </div>
 
   </div>

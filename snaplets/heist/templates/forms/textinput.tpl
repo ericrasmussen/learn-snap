@@ -1,7 +1,6 @@
-<apply template="base">
+<apply template="formwrapper">
 
-  <div class="row">
-    <textInputForm action="/textinput">
+    <textInput action="/textinput">
 
         <dfLabelError ref="textinput">Text: </dfLabelError>
         <dfInputText ref="textinput" checkerror="textinput" />
@@ -9,9 +8,6 @@
 
       <dfInputSubmit value="Submit" />
 
-    </textInputForm>
-  </div>
-
-  <apply template="tabs" />
+    </textInput>
 
 </apply>
