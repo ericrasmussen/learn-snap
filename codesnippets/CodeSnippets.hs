@@ -1,16 +1,8 @@
-{-# LANGUAGE OverloadedStrings #-}
-
--- Highlighting executable based on the highlighting-kate example from:
---   https://github.com/jgm/highlighting-kate/blob/master/extra/Highlight.hs
-
 import Control.Applicative ((<$>))
-import Text.Highlighting.Kate
-import Text.Blaze.Html
-import Text.Blaze.Html.Renderer.String
-import qualified Text.Blaze.Html5 as H
-import qualified Text.Blaze.Html5.Attributes as A
 import System.FilePath ((</>), takeExtension, replaceExtension)
 import System.Directory (getDirectoryContents, getCurrentDirectory)
+import Text.Highlighting.Kate
+import Text.Blaze.Html.Renderer.String
 
 --------------------------------------------------------------------------------
 
