@@ -50,11 +50,11 @@ textInputForm = SomeText
 -- * Create compiled Heist splices to export
 
 textInputSplices :: MonadSnap n => Splices (Splice n)
-textInputSplices = makeFormSplices "textInputForm" textInputForm maybeSomeText
+textInputSplices = makeFormSplices "textInput" textInputForm maybeSomeText
 
 -- -----------------------------------------------------------------------------
 -- * Create a handler to render the Heist template
 
 textInputHandler :: AppHandler ()
-textInputHandler = cRender "forms/textinput"
+textInputHandler = cRender "/forms/textinput"
 
