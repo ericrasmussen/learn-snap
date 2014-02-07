@@ -5,18 +5,11 @@
 
 import Control.Applicative ((<$>))
 import Text.Highlighting.Kate
-import System.IO (hPutStrLn, stderr)
-import System.Environment
-import System.Console.GetOpt
-import System.Exit
-import System.FilePath (takeFileName)
-import Data.Maybe (listToMaybe)
-import Data.Char (toLower)
 import Text.Blaze.Html
 import Text.Blaze.Html.Renderer.String
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
-import System.FilePath ((</>), takeExtension, dropExtension, addExtension)
+import System.FilePath ((</>), takeExtension, replaceExtension)
 import System.Directory (getDirectoryContents, getCurrentDirectory)
 
 --------------------------------------------------------------------------------
@@ -28,11 +21,6 @@ filterExt ext = filter (\path -> takeExtension path == ext)
 
 
 -- replaces a file's extension with .tpl, which is what we'll be using when
--- preparing our html syntax highlighted heist templates
-replaceExtTpl :: FilePath -> FilePath
-replaceExtTpl = addExtension "tpl" . dropExtension
-
-
 -- takes a file path relative to the current working directory and gets a list
 -- of all the contents of that directory with the supplied extension
 getSourceFiles :: FilePath -> String -> IO [FilePath]
@@ -56,7 +44,7 @@ langFromExt path = case takeExtension path of
 readAndWriteFile :: FilePath -> FilePath -> FilePath -> IO ()
 readAndWriteFile inFolder outFolder name = do
   contents    <- readFile $ inFolder </> name
-  let newName = outFolder </> replaceExtTpl name
+  let newName = outFolder </> (replaceExtension name ".tpl")
   writeFile newName $ highlight (langFromExt name) contents
 
 
@@ -66,8 +54,24 @@ highlight lang code = renderHtml fragment
   where fragment = formatHtmlBlock defaultFormatOpts $ highlightAs lang code
 
 
+-- highlights all files from path with the given extension, and outputs
+-- the syntax highlighted html fragments as .tpl files in destination
+highlightFiles :: String -> String -> String -> IO ()
+highlightFiles path ext destination = do
+  files <- getSourceFiles path ext
+  mapM_ (readAndWriteFile path destination) files
+
+
+-- preprocess all the relevant hs and tpl files
 main = do
-  hsFiles  <- getSourceFiles "src/handlers" ".hs"
-  mapM_ (readAndWriteFile "src/handlers" "snaplets/heist/templates/code") hsFiles
-  --tplFiles <- getSourceFiles "snaplets/heist/templates/forms/"
-  -- "snaplets/heist/templates/html"
+  putStrLn "creating tpl files from src/handlers/*.hs"
+  highlightFiles "src/handlers" ".hs" "snaplets/heist/templates/code"
+  putStrLn "...new .tpl files now available in snaplets/heist/templates/code"
+
+  -- extra line space to make output cleaner
+  putStrLn ""
+
+  putStrLn "creating tpl files from snaplets/heist/templates/forms/*.tpl"
+  highlightFiles "snaplets/heist/templates/forms" ".tpl" "snaplets/heist/templates/html"
+  putStrLn "...new .tpl files now available in snaplets/heist/templates/html"
+
