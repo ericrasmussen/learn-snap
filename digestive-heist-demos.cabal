@@ -21,6 +21,9 @@ Flag old-base
 Executable highlight-code-snippets
   hs-source-dirs: codesnippets
   main-is: CodeSnippets.hs
+
+  GHC-Options: -fwarn-unused-imports
+
   build-depends:
     highlighting-kate         >= 0.5.6 && < 0.6,
     blaze-html                >= 0.6   && < 0.8,
