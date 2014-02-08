@@ -37,8 +37,11 @@ langFromExt path = case takeExtension path of
 readAndWriteFile :: FilePath -> FilePath -> FilePath -> IO ()
 readAndWriteFile inFolder outFolder name = do
   contents    <- readFile $ inFolder </> name
-  let newName = outFolder </> (replaceExtension name ".tpl")
-  writeFile newName $ highlight (langFromExt name) contents
+  -- lower case the file name before creating the output file path
+  let newName = map toLower name
+      outPath = outFolder </> (replaceExtension newName ".tpl")
+      lang    = langFromExt name
+  writeFile outPath $ highlight lang contents
 
 
 -- highlight a given code block for a specified lang (haskell or xml)
@@ -52,8 +55,7 @@ highlight lang code = renderHtml fragment
 highlightFiles :: String -> String -> String -> IO ()
 highlightFiles path ext destination = do
   files <- getSourceFiles path ext
-  let lowercased = map (map toLower) files
-  mapM_ (readAndWriteFile path destination) lowercased
+  mapM_ (readAndWriteFile path destination) files
 
 -- preprocess all the relevant hs and tpl files
 main = do
