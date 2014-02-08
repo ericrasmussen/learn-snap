@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, TemplateHaskell, FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module TextInput
        ( textInputHandler
