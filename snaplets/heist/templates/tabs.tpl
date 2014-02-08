@@ -21,12 +21,12 @@
       <captured>None</captured>
     </div>
 
-    <div class="content" id="panel2-2">
-      <p>code code code</p>
+    <div class="content codeblock" id="panel2-2">
+      <formCode/>
     </div>
 
-    <div class="content" id="panel2-3">
-      <p>template template template</p>
+    <div class="content codeblock" id="panel2-3">
+      <templateCode/>
     </div>
 
   </div>

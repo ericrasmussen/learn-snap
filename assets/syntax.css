@@ -1,0 +1,43 @@
+/* container div class */
+.codeblock {
+    background: none;
+}
+
+/* code blocks */
+code {
+    font-weight: normal;
+    color: #F04124;
+}
+
+/* keywords */
+code .kw { color: #2ba6cb; }
+
+/* data types */
+code .dt { color: #2ba6cb; }
+
+/* decimal, base, and float values */
+code .dv, code .bn, code .fl { color: #D33682; }
+
+/* char tokens */
+code .ch { color: #DC322F; }
+
+/* string tokens */
+code .st { color: #5da423; }
+
+/* comments */
+code .co { color: #93A1A1; }
+
+/* other */
+code .ot { color: #222222; }
+
+/* alert */
+code .al { color: #CB4B16; font-weight: bold; }
+
+/* function */
+code .fu { color: #2ba6cb; }
+
+/* region marker (no special style currently) */
+code .re { }
+
+/* error */
+code .er { color: #D30102; font-weight: bold; }

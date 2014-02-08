@@ -1,0 +1,3 @@
+# snap server requires this folder for housing logs but we don't want the log
+# files in git
+*.log

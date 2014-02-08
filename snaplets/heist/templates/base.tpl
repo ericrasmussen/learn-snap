@@ -12,6 +12,7 @@
     <meta name="copyright" content="Chromatic Leaves. Copyright (c) 2013" />
 
     <link rel="stylesheet" href="/assets/foundation/css/foundation.css" />
+    <link rel="stylesheet" href="/assets/syntax.css" />
     <script src="/assets/foundation/js/modernizr.js"></script>
   </head>
   <body>
@@ -57,11 +58,7 @@
 
       <h5>Demos</h5>
       <ul class="side-nav">
-        <li><a href="#">News</a></li>
-        <li><a href="#">Code</a></li>
-        <li><a href="#">Design</a></li>
-        <li><a href="#">Fun</a></li>
-        <li><a href="#">Weasels</a></li>
+        <li><a href="/textinput">Text Input</a></li>
       </ul>
 
     </aside>
