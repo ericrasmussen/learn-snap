@@ -60,6 +60,7 @@
       <ul class="side-nav">
         <li><a href="/textinput">Text Input</a></li>
         <li><a href="/textarea">Text Area</a></li>
+        <li><a href="/password">Password</a></li>
       </ul>
 
     </aside>
