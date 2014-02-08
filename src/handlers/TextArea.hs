@@ -43,7 +43,7 @@ checkText _  = True
 -- -----------------------------------------------------------------------------
 -- * Define a form
 
--- creates a form with a single text input field
+-- creates a form with a single textarea field
 textAreaForm :: Monad m => Form Text m TextBlob
 textAreaForm = TextBlob
   <$> "textarea" .: check "Must not be empty" checkText (text Nothing)
