@@ -27,8 +27,7 @@ data TextBlob = TextBlob {
 -- -----------------------------------------------------------------------------
 -- * Provide a way to render a Maybe <your data type> as Text
 
-
--- don't use show here! maybe preserve lines? or convert to line breaks.
+-- this example will replace line breaks with break tags
 maybeTextBlob :: Maybe TextBlob -> Text
 maybeTextBlob Nothing     = "None"
 maybeTextBlob (Just blob) = T.intercalate "<br />" $ T.lines (getText blob)
