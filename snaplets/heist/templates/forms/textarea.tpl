@@ -4,7 +4,7 @@
 
         <dfLabelError ref="textarea">Text Area:</dfLabelError>
 
-        <dfInputTextArea style="height:200px;" ref="textarea" checkerror="textarea" />
+        <dfInputTextArea style="min-height:200px;" ref="textarea" checkerror="textarea" />
 
         <dfErrorsInline ref="textarea" />
 
