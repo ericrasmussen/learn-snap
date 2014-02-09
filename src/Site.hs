@@ -23,16 +23,20 @@ import           Snap.Core (MonadSnap)
 
 -- these imports are from our standalone modules in src/handlers
 import           TextInput (textInputHandler, textInputSplices)
-import           TextArea (textAreaHandler, textAreaSplices)
-import           Password (passwordHandler, passwordSplices)
+import           TextArea  (textAreaHandler, textAreaSplices)
+import           Password  (passwordHandler, passwordSplices)
+import           Combo     (comboHandler,   comboSplices)
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("/", indexHandler)
+         -- forms
          , ("/textinput", textInputHandler)
-         , ("/textarea",  textAreaHandler )
-         , ("/password",  passwordHandler )
+         , ("/textarea",  textAreaHandler)
+         , ("/password",  passwordHandler)
+         , ("/combo",     comboHandler)
+         -- static assets
          , ("assets", serveDirectory "assets")
          ]
 
@@ -42,6 +46,7 @@ allCompiledSplices :: MonadSnap n => Splices (C.Splice n)
 allCompiledSplices = mconcat [ textInputSplices
                              , textAreaSplices
                              , passwordSplices
+                             , comboSplices
                              ]
 
 ------------------------------------------------------------------------------
