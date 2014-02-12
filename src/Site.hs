@@ -53,7 +53,7 @@ allCompiledSplices = mconcat [ textInputSplices
 -- | The application initializer.
 app :: SnapletInit App App
 app = makeSnaplet "app" "A snap demo application." Nothing $ do
-    h <- nestSnaplet "" heist $ heistInit "templates"
+    h <- nestSnaplet "" heist $ heistInit ""
     addConfig h $ mempty { hcCompiledSplices = allCompiledSplices }
     s <- nestSnaplet "sess" sess $
            initCookieSessionManager "site_key.txt" "sess" (Just 3600)
