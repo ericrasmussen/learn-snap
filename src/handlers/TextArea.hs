@@ -25,12 +25,11 @@ data TextBlob = TextBlob {
   } deriving Show
 
 -- -----------------------------------------------------------------------------
--- * Provide a way to render a Maybe <your data type> as Text
+-- * Provide a way to render your data type as Text
 
 -- this example will replace line breaks with break tags
-maybeTextBlob :: Maybe TextBlob -> Text
-maybeTextBlob Nothing     = "None"
-maybeTextBlob (Just blob) = T.intercalate "<br />" $ T.lines (getText blob)
+asText :: TextBlob -> Text
+asText = T.intercalate "<br />" . T.lines . getText
 
 -- -----------------------------------------------------------------------------
 -- * Optionally create predicates to validate form input
@@ -44,15 +43,15 @@ checkText _  = True
 -- * Define a form
 
 -- creates a form with a single textarea field
-textAreaForm :: Monad m => Form Text m TextBlob
-textAreaForm = TextBlob
+form :: Monad m => Form Text m TextBlob
+form = TextBlob
   <$> "textarea" .: check "Must not be empty" checkText (text Nothing)
 
 -- -----------------------------------------------------------------------------
 -- * Create compiled Heist splices to export
 
 textAreaSplices :: MonadSnap n => Splices (Splice n)
-textAreaSplices = makeFormSplices "textArea" textAreaForm maybeTextBlob
+textAreaSplices = makeFormSplices "textArea" "textAreaTabs" form asText
 
 -- -----------------------------------------------------------------------------
 -- * Create a handler to render the Heist template

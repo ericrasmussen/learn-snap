@@ -24,32 +24,28 @@ import FormHelpers (makeFormSplices)
 data Tea = Black | Green | White | Oolong | Puerh
   deriving (Eq, Show, Enum)
 
-teaToText :: Tea -> Text
-teaToText = T.pack . show
-
-teaChoices :: [(Tea, Text)]
-teaChoices = map (\t -> (t, teaToText t)) [Black .. Puerh]
-
 -- -----------------------------------------------------------------------------
--- * Provide a way to render a Maybe <your data type> as Text
+-- * Provide a way to render your data type as Text
 
-maybeTeaText :: Maybe Tea -> Text
-maybeTeaText Nothing  = "None"
-maybeTeaText (Just t) = teaToText t
-
+asText :: Tea -> Text
+asText = T.pack . show
 
 -- -----------------------------------------------------------------------------
 -- * Define a form
 
 -- create a form with a single select field listing Teas
-comboForm :: Monad m => Form Text m Tea
-comboForm = "combo" .: choice teaChoices Nothing
+form :: Monad m => Form Text m Tea
+form = "combo" .: choice teaChoices Nothing
+
+-- enumerate the tea choices for our form
+teaChoices :: [(Tea, Text)]
+teaChoices = map (\t -> (t, asText t)) [Black .. Puerh]
 
 -- -----------------------------------------------------------------------------
 -- * Create compiled Heist splices to export
 
 comboSplices :: MonadSnap n => Splices (Splice n)
-comboSplices = makeFormSplices "combo" comboForm maybeTeaText
+comboSplices = makeFormSplices "combo" "comboTabs" form asText
 
 -- -----------------------------------------------------------------------------
 -- * Create a handler to render the Heist template

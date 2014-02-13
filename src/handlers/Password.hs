@@ -20,8 +20,7 @@ import FormHelpers (makeFormSplices)
 -- -----------------------------------------------------------------------------
 -- * Define your data
 
-
--- a fake user type. note that actually storing passwords as text is a
+-- a fake user type. note that actually storing passwords as plain text is a
 -- terrible idea
 data User = User {
     username :: Text
@@ -29,11 +28,10 @@ data User = User {
   } deriving Show
 
 -- -----------------------------------------------------------------------------
--- * Provide a way to render a Maybe <your data type> as Text
+-- * Provide a way to render your data type as Text
 
-maybeUserText :: Maybe User -> Text
-maybeUserText Nothing  = "None"
-maybeUserText (Just u) = T.append (username u) " is now logged in (not really)"
+asText :: User -> Text
+asText u = T.append (username u) " is now logged in (not really)"
 
 -- -----------------------------------------------------------------------------
 -- * Optionally create predicates to validate form input
@@ -57,8 +55,8 @@ passwordError = "At least one number and more than 4 characters"
 -- * Define a form
 
 -- creates a form with a single text input field
-passwordForm :: Monad m => Form Text m User
-passwordForm = User
+form :: Monad m => Form Text m User
+form = User
   <$> "username" .: check usernameError checkUsername (text Nothing)
   <*> "password" .: check passwordError checkPassword (text Nothing)
 
@@ -66,7 +64,7 @@ passwordForm = User
 -- * Create compiled Heist splices to export
 
 passwordSplices :: MonadSnap n => Splices (Splice n)
-passwordSplices = makeFormSplices "password" passwordForm maybeUserText
+passwordSplices = makeFormSplices "password" "passwordTabs" form asText
 
 -- -----------------------------------------------------------------------------
 -- * Create a handler to render the Heist template

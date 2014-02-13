@@ -24,7 +24,7 @@ data SomeText = SomeText Text
   deriving Show
 
 -- -----------------------------------------------------------------------------
--- * Provide a way to render a Maybe <your data type> as Text
+-- * Provide a way to render your data type as Text
 
 asText :: SomeText -> Text
 asText = T.pack . show
