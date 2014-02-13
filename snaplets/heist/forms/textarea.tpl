@@ -1,15 +1,18 @@
-<apply template="formwrapper">
+<!-- wrap our form template with the primary base template -->
+<apply template="base">
 
-    <textArea action="/textarea">
+  <!-- the form splice to be processed by digestive-functors -->
+  <textArea action="/textarea">
 
-        <dfLabelError ref="textarea">Text Area:</dfLabelError>
+    <dfLabelError ref="textarea">Text Area:</dfLabelError>
+    <dfInputTextArea style="min-height:200px;" ref="textarea" checkerror="textarea" />
+    <dfErrorsInline ref="textarea" />
 
-        <dfInputTextArea style="min-height:200px;" ref="textarea" checkerror="textarea" />
+    <dfInputSubmit value="Submit" />
 
-        <dfErrorsInline ref="textarea" />
+  </textArea>
 
-      <dfInputSubmit value="Submit" />
-
-    </textArea>
+  <!-- the result/code/template tabs unique to this form -->
+  <textAreaTabs />
 
 </apply>

@@ -1,13 +1,18 @@
-<apply template="formwrapper">
+<!-- wrap our form template with the primary base template -->
+<apply template="base">
 
-    <combo action="/combo">
+  <!-- the form splice to be processed by digestive-functors -->
+  <combo action="/combo">
 
-        <dfLabelError ref="combo">Choice of tea:</dfLabelError>
-        <dfInputSelect ref="combo" checkerror="combo" />
-        <dfErrorsInline ref="combo" />
+    <dfLabelError ref="combo">Choice of tea:</dfLabelError>
+    <dfInputSelect ref="combo" checkerror="combo" />
+    <dfErrorsInline ref="combo" />
 
-        <dfInputSubmit value="Submit" />
+    <dfInputSubmit value="Submit" />
 
-    </combo>
+  </combo>
+
+  <!-- the result/code/template tabs unique to this form -->
+  <comboTabs />
 
 </apply>
