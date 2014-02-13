@@ -26,9 +26,8 @@ data SomeText = SomeText Text
 -- -----------------------------------------------------------------------------
 -- * Provide a way to render a Maybe <your data type> as Text
 
-maybeSomeText :: Maybe SomeText -> Text
-maybeSomeText Nothing  = "None"
-maybeSomeText (Just t) = T.pack . show $ t
+asText :: SomeText -> Text
+asText = T.pack . show
 
 -- -----------------------------------------------------------------------------
 -- * Optionally create predicates to validate form input
@@ -42,15 +41,15 @@ checkText _  = True
 -- * Define a form
 
 -- creates a form with a single text input field
-textInputForm :: Monad m => Form Text m SomeText
-textInputForm = SomeText
+form :: Monad m => Form Text m SomeText
+form = SomeText
   <$> "textinput" .: check "Must not be empty" checkText (text Nothing)
 
 -- -----------------------------------------------------------------------------
 -- * Create compiled Heist splices to export
 
 textInputSplices :: MonadSnap n => Splices (Splice n)
-textInputSplices = makeFormSplices "textInput" textInputForm maybeSomeText
+textInputSplices = makeFormSplices "textInput" "textInputTabs" form asText
 
 -- -----------------------------------------------------------------------------
 -- * Create a handler to render the Heist template
