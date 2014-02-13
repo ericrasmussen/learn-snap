@@ -61,6 +61,7 @@
         <li><a href="/textinput">Text Input</a></li>
         <li><a href="/textarea">Text Area</a></li>
         <li><a href="/password">Password</a></li>
+        <li><a href="/combo">Select (combo box)</a></li>
       </ul>
 
     </aside>

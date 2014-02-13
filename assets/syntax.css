@@ -28,7 +28,7 @@ code .st { color: #5da423; }
 code .co { color: #93A1A1; }
 
 /* other */
-code .ot { color: #222222; }
+code .ot { color: #2ba6cb; font-weight: bold; }
 
 /* alert */
 code .al { color: #CB4B16; font-weight: bold; }

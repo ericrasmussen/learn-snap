@@ -39,21 +39,35 @@ this continues to grow.
 -}
 
 
--- reduces boilerplate for creating forms that share the <captured> node and
--- checkerror attribute splice
+-- reduces boilerplate for creating form and tab splices
+-- assumes the form and tab splice names are unique (for now)
 makeFormSplices :: (Monad m, MonadSnap m)
                 => Text                   -- ^ node name/form identifier
+                -> Text                   -- ^ unique tabs identifier
                 -> Form Text m v          -- ^ the form to process
-                -> (Maybe v -> Text)      -- ^ convert Maybe results to Text
+                -> (v -> Text)            -- ^ display results as Text
                 -> Splices (C.Splice m)   -- ^ the compiled splices we return
-makeFormSplices node form handleResult = do
+makeFormSplices node tabs form toText = do
   let processed  = runForm node form
       view       = liftM fst processed
       res        = liftM snd processed
-  node           ## DF.formSplice' extraDigestiveSplices attrSplices (lift view)
-  "captured"     ## (C.pureSplice . C.textSplice) handleResult $ (lift res)
-  "formCode"     ## templateSplice node Code
-  "templateCode" ## templateSplice node HTML
+  node ## DF.formSplice' extraDigestiveSplices attrSplices (lift view)
+  tabs ## C.withLocalSplices (tabSplices node res toText) noSplices (C.callTemplate "tabs")
+
+
+-- creates local tab splices (the result/code/template tabs on each demo) for
+-- use when rendering the tabs template
+tabSplices :: (Monad m, MonadSnap m)
+           => Text
+           -> m (Maybe v)
+           -> (v -> Text)
+           -> Splices (C.Splice m)
+tabSplices tplName res asText = do
+  "captured"     ## (C.pureSplice . C.textSplice) maybeText $ lift res
+  "formCode"     ## templateSplice tplName Code
+  "templateCode" ## templateSplice tplName HTML
+    where
+      maybeText = fromMaybe "None" . fmap asText
 
 
 -- to avoid passing around Strings for the folder locations

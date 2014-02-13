@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module TextInput
-       ( textInputHandler
-       , textInputSplices
+module Combo
+       ( comboHandler
+       , comboSplices
        ) where
 
 import Heist
@@ -12,7 +12,7 @@ import Snap.Core (MonadSnap)
 import Text.Digestive
 import Data.Text (Text)
 import qualified Data.Text as T
-import Control.Applicative ((<$>))
+import Control.Applicative ((<$>), (<*>))
 import Application (AppHandler)
 import FormHelpers (makeFormSplices)
 
@@ -20,40 +20,36 @@ import FormHelpers (makeFormSplices)
 -- -----------------------------------------------------------------------------
 -- * Define your data
 
-data SomeText = SomeText Text
-  deriving Show
+-- tea choices
+data Tea = Black | Green | White | Oolong | Puerh
+  deriving (Eq, Show, Enum)
 
 -- -----------------------------------------------------------------------------
 -- * Provide a way to render your data type as Text
 
-asText :: SomeText -> Text
+asText :: Tea -> Text
 asText = T.pack . show
-
--- -----------------------------------------------------------------------------
--- * Optionally create predicates to validate form input
-
--- check that the input Text is non-empty
-checkText :: Text -> Bool
-checkText "" = False
-checkText _  = True
 
 -- -----------------------------------------------------------------------------
 -- * Define a form
 
--- creates a form with a single text input field
-form :: Monad m => Form Text m SomeText
-form = SomeText
-  <$> "textinput" .: check "Must not be empty" checkText (text Nothing)
+-- create a form with a single select field listing Teas
+form :: Monad m => Form Text m Tea
+form = "combo" .: choice teaChoices Nothing
+
+-- enumerate the tea choices for our form
+teaChoices :: [(Tea, Text)]
+teaChoices = map (\t -> (t, asText t)) [Black .. Puerh]
 
 -- -----------------------------------------------------------------------------
 -- * Create compiled Heist splices to export
 
-textInputSplices :: MonadSnap n => Splices (Splice n)
-textInputSplices = makeFormSplices "textInput" "textInputTabs" form asText
+comboSplices :: MonadSnap n => Splices (Splice n)
+comboSplices = makeFormSplices "combo" "comboTabs" form asText
 
 -- -----------------------------------------------------------------------------
 -- * Create a handler to render the Heist template
 
-textInputHandler :: AppHandler ()
-textInputHandler = cRender "/forms/textinput"
+comboHandler :: AppHandler ()
+comboHandler = cRender "/forms/combo"
 
