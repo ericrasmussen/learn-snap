@@ -28,7 +28,7 @@
          <li><a href="http://hackage.haskell.org/package/digestive-functors" class="button">Forms</a></li>
         </ul>
       </div>
-      <h1>Snap by Example</h1>
+      <h1><a href="/">Snap by Example</a></h1>
       <hr />
     </div>
   </div>
