@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Digestive Functor Demos in Snap</title>
+    <title>Snap by Example</title>
 
 
     <meta name="description" content="Form demos using the Digestive Functors library with Snap and Heist" />
@@ -28,7 +28,7 @@
          <li><a href="http://hackage.haskell.org/package/digestive-functors" class="button">Forms</a></li>
         </ul>
       </div>
-      <h1>Digestive Heist Demos</h1>
+      <h1>Snap by Example</h1>
       <hr />
     </div>
   </div>
@@ -40,7 +40,7 @@
 
   <div class="row">
 
-    <!-- Main Blog Content -->
+    <!-- Main Page Content -->
     <div class="large-9 columns" role="content">
 
 
@@ -56,7 +56,7 @@
 
     <aside class="large-3 columns">
 
-      <h5>Demos</h5>
+      <h5>Forms</h5>
       <ul class="side-nav">
         <li><a href="/textinput">Text Input</a></li>
         <li><a href="/textarea">Text Area</a></li>
@@ -79,7 +79,7 @@
       <hr />
       <div class="row">
         <div class="large-8 columns">
-          <p>&copy; 2009 - 2014 Chromatic Leaves</p>
+          <p>&copy; 2009 - 2014 <a href="http://chromaticleaves.com">Chromatic Leaves</a></p>
         </div>
       </div>
     </div>
