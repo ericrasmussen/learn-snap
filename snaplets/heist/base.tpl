@@ -79,7 +79,7 @@
       <hr />
       <div class="row">
         <div class="large-8 columns">
-          <p>&copy; 2009 - 2014 <a href="http://chromaticleaves.com">Chromatic Leaves</a></p>
+          <p>&copy; 2014 <a href="http://chromaticleaves.com">Chromatic Leaves</a></p>
         </div>
       </div>
     </div>
