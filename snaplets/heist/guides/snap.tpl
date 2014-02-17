@@ -1,6 +1,6 @@
 <apply template="base">
 
-  <h3>Snap</h3>
+  <h3>Meet the Snaplets</h3>
 
   <ul class="orbit-content" data-orbit>
     <li data-orbit-slide="headline-1">
