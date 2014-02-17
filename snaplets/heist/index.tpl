@@ -20,7 +20,7 @@
   <h3>The whole stack</h3>
 
   <p>
-    If you're coming to Haskell from another language, or coming to Hasell web
+    If you're coming to Haskell from another language, or coming to Haskell web
     development from another domain, it's completely normal to feel overwhelmed
     by all of the layers and components in a typical web stack. And even if
     you've been at it for years, no two frameworks or APIs are the same.
