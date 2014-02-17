@@ -1,0 +1,11 @@
+/* additional styling for orbit containers on the /guides/ pages */
+
+.orbit-content li div {
+    color: white;
+    background: #2ba6cb;
+    padding: 30px 40px;
+}
+
+.example-orbit-content li div h1, .example-orbit-content li div h2, .example-orbit-content li div h3 {
+    color: white;
+}

@@ -12,6 +12,7 @@
     <meta name="copyright" content="Chromatic Leaves. Copyright (c) 2013" />
 
     <link rel="stylesheet" href="/assets/foundation/css/foundation.css" />
+    <link rel="stylesheet" href="/assets/main.css" />
     <link rel="stylesheet" href="/assets/syntax.css" />
     <script src="/assets/foundation/js/modernizr.js"></script>
   </head>
@@ -23,9 +24,9 @@
     <div class="large-12 columns">
       <div class="nav-bar right">
        <ul class="button-group">
-         <li><a href="http://snapframework.com/" class="button">Snap</a></li>
-         <li><a href="http://snapframework.com/docs/tutorials/heist" class="button">Heist</a></li>
-         <li><a href="http://hackage.haskell.org/package/digestive-functors" class="button">Forms</a></li>
+         <li><a href="/guides/snap" class="button">Snap</a></li>
+         <li><a href="/guides/heist" class="button">Heist</a></li>
+         <li><a href="/guides/forms" class="button">Forms</a></li>
         </ul>
       </div>
       <h1><a href="/">Snap by Example</a></h1>
