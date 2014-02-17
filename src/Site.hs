@@ -29,8 +29,12 @@ import           Combo     (comboHandler,   comboSplices)
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
-routes :: [(ByteString, Handler App App ())]
+routes :: [(ByteString, AppHandler ())]
 routes = [ ("/", indexHandler)
+         -- guides
+         , ("/guides/heist", heistGuide)
+         , ("/guides/snap",  snapGuide)
+         , ("/guides/forms", formsGuide)
          -- forms
          , ("/textinput", textInputHandler)
          , ("/textarea",  textAreaHandler)
@@ -62,5 +66,17 @@ app = makeSnaplet "app" "A snap demo application." Nothing $ do
 
 --------------------------------------------------------------------------------
 -- | Our glorious index page
-indexHandler :: Handler App App ()
+indexHandler :: AppHandler ()
 indexHandler = render "index"
+
+-- | A quick overview of Heist
+heistGuide :: AppHandler ()
+heistGuide = render "/guides/heist"
+
+-- | A quick overview of Snap
+snapGuide :: AppHandler ()
+snapGuide = render "/guides/snap"
+
+-- | A quick overview of digestive-functors/forms in Snap
+formsGuide :: AppHandler ()
+formsGuide = render "/guides/forms"
