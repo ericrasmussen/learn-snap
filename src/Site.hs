@@ -20,12 +20,11 @@ import           Heist
 import qualified Heist.Compiled as C
 import           Data.Monoid
 import           Snap.Core (MonadSnap)
-
--- these imports are from our standalone modules in src/handlers
-import           TextInput (textInputHandler, textInputSplices)
-import           TextArea  (textAreaHandler, textAreaSplices)
-import           Password  (passwordHandler, passwordSplices)
-import           Combo     (comboHandler,   comboSplices)
+------------------------------------------------------------------------------
+import           Demos.Forms.TextInput (textInputHandler, textInputSplices)
+import           Demos.Forms.TextArea  (textAreaHandler,  textAreaSplices)
+import           Demos.Forms.Password  (passwordHandler,  passwordSplices)
+import           Demos.Forms.Combo     (comboHandler,     comboSplices)
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
@@ -36,10 +35,10 @@ routes = [ ("/", indexHandler)
          , ("/guides/snap",  snapGuide)
          , ("/guides/forms", formsGuide)
          -- forms
-         , ("/textinput", textInputHandler)
-         , ("/textarea",  textAreaHandler)
-         , ("/password",  passwordHandler)
-         , ("/combo",     comboHandler)
+         , ("/forms/textinput", textInputHandler)
+         , ("/forms/textarea",  textAreaHandler)
+         , ("/forms/password",  passwordHandler)
+         , ("/forms/combo",     comboHandler)
          -- static assets
          , ("assets", serveDirectory "assets")
          ]

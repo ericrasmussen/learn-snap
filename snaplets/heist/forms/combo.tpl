@@ -2,7 +2,7 @@
 <apply template="base">
 
   <!-- the form splice to be processed by digestive-functors -->
-  <combo action="/combo">
+  <combo action="/forms/combo">
 
     <dfLabelError ref="combo">Choice of tea:</dfLabelError>
     <dfInputSelect ref="combo" checkerror="combo" />

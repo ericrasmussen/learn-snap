@@ -60,13 +60,13 @@ highlightFiles path ext destination = do
 -- preprocess all the relevant hs and tpl files
 main = do
   putStrLn "creating tpl files from src/handlers/*.hs"
-  highlightFiles "src/handlers" ".hs" "snaplets/heist/code"
-  putStrLn "...new .tpl files now available in snaplets/heist/code"
+  highlightFiles "src/demos/forms" ".hs" "snaplets/heist/generated/code"
+  putStrLn "...new .tpl files now available in snaplets/heist/generated/code"
 
   -- extra line space to make output cleaner
   putStrLn ""
 
   putStrLn "creating tpl files from snaplets/heist/forms/*.tpl"
-  highlightFiles "snaplets/heist/forms" ".tpl" "snaplets/heist/html"
-  putStrLn "...new .tpl files now available in snaplets/heist/html"
+  highlightFiles "snaplets/heist/forms" ".tpl" "snaplets/heist/generated/html"
+  putStrLn "...new .tpl files now available in snaplets/heist/generated/html"
 

@@ -2,7 +2,7 @@
 <apply template="base">
 
   <!-- the form splice to be processed by digestive-functors -->
-  <textInput action="/textinput">
+  <textInput action="/forms/textinput">
 
     <dfLabelError ref="textinput">Text:</dfLabelError>
     <dfInputText ref="textinput" checkerror="textinput" />

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings, TemplateHaskell, FlexibleContexts #-}
 
-module FormHelpers
+module Demos.Utils.Forms
        ( makeFormSplices
        ) where
 
@@ -52,7 +52,7 @@ makeFormSplices node tabs form toText = do
       view       = liftM fst processed
       res        = liftM snd processed
   node ## DF.formSplice' extraDigestiveSplices attrSplices (lift view)
-  tabs ## C.withLocalSplices (tabSplices node res toText) noSplices (C.callTemplate "tabs")
+  tabs ## C.withLocalSplices (tabSplices node res toText) noSplices (C.callTemplate "form_tabs")
 
 
 -- creates local tab splices (the result/code/template tabs on each demo) for
@@ -77,8 +77,8 @@ data SnippetDir = Code | HTML
 -- creates a ByteString representing the relative path to the Heist template
 makeByteStringPath :: Text -> SnippetDir -> ByteString
 makeByteStringPath name dir = encodeUtf8 $ T.concat [base dir, T.toLower name]
-  where base Code = "/code/"
-        base HTML = "/html/"
+  where base Code = "/generated/code/"
+        base HTML = "/generated/html/"
 
 
 -- creates a compiled Splice from a template

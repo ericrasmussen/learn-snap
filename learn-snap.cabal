@@ -19,7 +19,11 @@ Flag old-base
   manual: False
 
 Executable learnsnap
-  hs-source-dirs: src, src/handlers
+  hs-source-dirs: src,
+                  src/demos/forms,
+                  src/demos/interpreted,
+                  src/demos/compiled,
+                  src/demos/utils
   main-is: Main.hs
 
   GHC-Options: -fwarn-unused-imports

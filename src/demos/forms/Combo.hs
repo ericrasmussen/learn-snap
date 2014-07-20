@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Combo
+module Demos.Forms.Combo
        ( comboHandler
        , comboSplices
        ) where
@@ -12,9 +12,8 @@ import Snap.Core (MonadSnap)
 import Text.Digestive
 import Data.Text (Text)
 import qualified Data.Text as T
-import Control.Applicative ((<$>), (<*>))
 import Application (AppHandler)
-import FormHelpers (makeFormSplices)
+import Demos.Utils.Forms (makeFormSplices)
 
 
 -- -----------------------------------------------------------------------------

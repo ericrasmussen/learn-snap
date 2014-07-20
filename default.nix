@@ -23,4 +23,10 @@ in cabal.mkDerivation (self: {
     license = self.stdenv.lib.licenses.bsd3;
     platforms = self.ghc.meta.platforms;
   };
+  # this runs, but is invoked from the wrong cwd. highlight-code-snippets
+  # should really take arguments instead.
+  postInstall=
+    ''
+      $out/bin/highlight-code-snippets
+    '';
 })

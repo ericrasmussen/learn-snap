@@ -7,7 +7,7 @@
   </p>
 
   <!-- the form splice to be processed by digestive-functors -->
-  <password action="/password">
+  <password action="/forms/password">
 
     <dfLabelError ref="username">Login:</dfLabelError>
     <dfInputText  ref="username" checkerror="username" />

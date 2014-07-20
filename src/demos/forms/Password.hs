@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Password
+module Demos.Forms.Password
        ( passwordHandler
        , passwordSplices
        ) where
@@ -14,7 +14,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Control.Applicative ((<$>), (<*>))
 import Application (AppHandler)
-import FormHelpers (makeFormSplices)
+import Demos.Utils.Forms (makeFormSplices)
 
 
 -- -----------------------------------------------------------------------------

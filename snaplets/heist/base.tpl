@@ -59,10 +59,10 @@
 
       <h5>Forms</h5>
       <ul class="side-nav">
-        <li><a href="/textinput">Text Input</a></li>
-        <li><a href="/textarea">Text Area</a></li>
-        <li><a href="/password">Password</a></li>
-        <li><a href="/combo">Select (combo box)</a></li>
+        <li><a href="/forms/textinput">Text Input</a></li>
+        <li><a href="/forms/textarea">Text Area</a></li>
+        <li><a href="/forms/password">Password</a></li>
+        <li><a href="/forms/combo">Select (combo box)</a></li>
       </ul>
 
     </aside>

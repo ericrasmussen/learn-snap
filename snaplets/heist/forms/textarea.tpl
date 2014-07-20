@@ -2,7 +2,7 @@
 <apply template="base">
 
   <!-- the form splice to be processed by digestive-functors -->
-  <textArea action="/textarea">
+  <textArea action="/forms/textarea">
 
     <dfLabelError ref="textarea">Text Area:</dfLabelError>
     <dfInputTextArea style="min-height:200px;" ref="textarea" checkerror="textarea" />
