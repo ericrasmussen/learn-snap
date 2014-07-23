@@ -27,6 +27,7 @@ in cabal.mkDerivation (self: {
   # should really take arguments instead.
   postInstall=
     ''
-      $out/bin/highlight-code-snippets
+      # ideally we'll run this after install
+      # $out/bin/highlight-code-snippets
     '';
 })
