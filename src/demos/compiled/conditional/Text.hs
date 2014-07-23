@@ -9,7 +9,7 @@
 
 module Demos.Compiled.Conditional.Text
   ( conditionalHandler
-  , tutorialSplices
+  , condTextSplices
   ) where
 
 ------------------------------------------------------------------------------
@@ -27,6 +27,7 @@ import qualified Heist.Compiled as C
 import qualified Heist.Compiled.LowLevel as LL
 ------------------------------------------------------------------------------
 import           Application
+import           Demos.Utils.Templates (makeTemplateSplices)
 --------------------------------------------------------------------------------
 
 -- simple data type for Tutorials that may or may not have an author
@@ -59,7 +60,7 @@ tutorialB = return Tutorial {
 -- | This is the Snap Handler that will be associated with a route in
 -- src/Site.hs
 conditionalHandler :: Handler App App ()
-conditionalHandler = cRender "conditional/tutorials"
+conditionalHandler = cRender "conditional/text/condtext"
 
 -- | Creates compiled splices for a template that expects two different
 -- tutorials to be inserted. We could map across a list of Tutorials, but to
@@ -92,4 +93,15 @@ maybeAuthor :: Tutorial -> T.Text
 maybeAuthor t = case author t of
   Nothing -> "no credited author"
   Just a  -> a
+
+
+-- ok so condtext.tpl is its own thing now
+-- but we also need to name where this source file will end up and render it too
+-- then change Templates.hs to be able to find both
+condTextSplices :: Monad m => Splices (C.Splice m)
+condTextSplices = mconcat [ tutorialSplices
+                          , makeTemplateSplices "text" "condTextTabs"
+                          ]
+
+
 

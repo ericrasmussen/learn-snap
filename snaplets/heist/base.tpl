@@ -65,6 +65,11 @@
         <li><a href="/forms/combo">Select (combo box)</a></li>
       </ul>
 
+      <h5>Compiled Heist</h5>
+      <ul class="side-nav">
+        <li><a href="/compiled/conditional/text">Conditional Text</a></li>
+      </ul>
+
     </aside>
 
     <!-- End Sidebar -->

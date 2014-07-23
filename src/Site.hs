@@ -25,7 +25,9 @@ import           Demos.Forms.TextInput (textInputHandler, textInputSplices)
 import           Demos.Forms.TextArea  (textAreaHandler,  textAreaSplices)
 import           Demos.Forms.Password  (passwordHandler,  passwordSplices)
 import           Demos.Forms.Combo     (comboHandler,     comboSplices)
-
+------------------------------------------------------------------------------
+import           Demos.Compiled.Conditional.Text ( conditionalHandler
+                                                 , condTextSplices)
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, AppHandler ())]
@@ -34,11 +36,13 @@ routes = [ ("/", indexHandler)
          , ("/guides/heist", heistGuide)
          , ("/guides/snap",  snapGuide)
          , ("/guides/forms", formsGuide)
-         -- forms
+         -- form demos
          , ("/forms/textinput", textInputHandler)
          , ("/forms/textarea",  textAreaHandler)
          , ("/forms/password",  passwordHandler)
          , ("/forms/combo",     comboHandler)
+         -- compiled heist demos
+         , ("/compiled/conditional/text", conditionalHandler)
          -- static assets
          , ("assets", serveDirectory "assets")
          ]
@@ -50,6 +54,7 @@ allCompiledSplices = mconcat [ textInputSplices
                              , textAreaSplices
                              , passwordSplices
                              , comboSplices
+                             , condTextSplices
                              ]
 
 ------------------------------------------------------------------------------
