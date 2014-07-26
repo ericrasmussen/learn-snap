@@ -28,7 +28,10 @@ import           Demos.Forms.Combo     (comboHandler,     comboSplices)
 ------------------------------------------------------------------------------
 import           Demos.Templates.Conditional ( conditionalHandler
                                              , conditionalSplices)
+import           Demos.Templates.Multiple ( multipleHandler
+                                          , multipleSplices)
 ------------------------------------------------------------------------------
+
 -- | The application's routes.
 routes :: [(ByteString, AppHandler ())]
 routes = [ ("/", indexHandler)
@@ -43,6 +46,7 @@ routes = [ ("/", indexHandler)
          , ("/forms/combo",     comboHandler)
          -- compiled heist demos
          , ("/templates/conditional", conditionalHandler)
+         , ("/templates/multiple",    multipleHandler)
          -- static assets
          , ("assets", serveDirectory "assets")
          ]
@@ -55,6 +59,7 @@ allCompiledSplices = mconcat [ textInputSplices
                              , passwordSplices
                              , comboSplices
                              , conditionalSplices
+                             , multipleSplices
                              ]
 
 ------------------------------------------------------------------------------

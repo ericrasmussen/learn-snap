@@ -7,9 +7,9 @@
 -- module so you don't need to follow a bunch of imports in order to understand
 -- these examples.
 
-module Demos.Compiled.Conditional.Template
-  ( conditionalTemplateHandler
-  , allAuthorSplices
+module Demos.Templates.Multiple
+  ( multipleHandler
+  , multipleSplices
   ) where
 
 ------------------------------------------------------------------------------
@@ -17,6 +17,7 @@ import           Control.Applicative
 import           Data.ByteString (ByteString)
 import qualified Data.Text as T
 import           Data.Monoid
+import           Data.Maybe (fromMaybe)
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
@@ -27,6 +28,7 @@ import qualified Heist.Compiled as C
 import qualified Heist.Compiled.LowLevel as LL
 ------------------------------------------------------------------------------
 import           Application
+import           Demos.Utils.Templates (makeTemplateSplices)
 --------------------------------------------------------------------------------
 
 -- simple data type for Tutorials that may or may not have an author
@@ -53,14 +55,19 @@ tutorialB = return Tutorial {
   , author = Just "mightybyte"
   }
 
+
+-- helper function to show the conditional case: having a credited author or not
+maybeAuthor :: Tutorial -> T.Text
+maybeAuthor = fromMaybe "no credited author" . author
+
 --------------------------------------------------------------------------------
 -- * A handler to demonstrate conditionally rendering an entire template and
 -- attaching it to a node.
 
 -- | Similar to conditionalHandler, except it conditionally inserts a rendered
 -- template instead of Text
-conditionalTemplateHandler :: Handler App App ()
-conditionalTemplateHandler = cRender "conditional/authors"
+multipleHandler :: Handler App App ()
+multipleHandler = cRender "templates/multiple/multiple"
 
 -- | Top level splices that will be bound to an empty value or a fully rendered
 -- template with local splices. We pass in a Maybe (RuntimeSplice n Tutorial) to
@@ -84,3 +91,7 @@ authorSplices (Just runtime) = C.withSplices authorTemplateSplice local runtime
 authorTemplateSplice :: Monad n => C.Splice n
 authorTemplateSplice = C.callTemplate "authorinfo"
 
+multipleSplices :: Monad m => Splices (C.Splice m)
+multipleSplices = mconcat [ allAuthorSplices
+                          , makeTemplateSplices "multiple" "multipleTabs"
+                          ]

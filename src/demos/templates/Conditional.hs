@@ -12,7 +12,7 @@ import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Heist
 import qualified Heist.Compiled as C
-
+import           Data.Maybe (fromMaybe)
 ------------------------------------------------------------------------------
 import           Application
 import           Demos.Utils.Templates (makeTemplateSplices)
@@ -29,9 +29,7 @@ data Tutorial = Tutorial {
 
 -- helper function to show the conditional case: having a credited author or not
 maybeAuthor :: Tutorial -> T.Text
-maybeAuthor t = case author t of
-  Nothing -> "no credited author"
-  Just a  -> a
+maybeAuthor = fromMaybe "no credited author" . author
 
 
 -- create two sample Tutorials
@@ -88,3 +86,7 @@ conditionalSplices = mconcat [ tutorialSplices
 
 conditionalHandler :: Handler App App ()
 conditionalHandler = cRender "templates/conditional/conditional"
+
+
+
+
