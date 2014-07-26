@@ -22,6 +22,7 @@ import Snap.Core (MonadSnap)
 import Control.Monad.Trans.Class (lift)
 import Data.Set (Set)
 import qualified Data.Set as Set
+import Demos.Utils.Paths (SnippetDir (..), getFormsPath)
 
 ------------------------------------------------------------------------------
 
@@ -70,15 +71,10 @@ tabSplices tplName res asText = do
       maybeText = fromMaybe "None" . fmap asText
 
 
--- to avoid passing around Strings for the folder locations
-data SnippetDir = Code | HTML
-
-
 -- creates a ByteString representing the relative path to the Heist template
 makeByteStringPath :: Text -> SnippetDir -> ByteString
-makeByteStringPath name dir = encodeUtf8 $ T.concat [base dir, T.toLower name]
-  where base Code = "/generated/code/"
-        base HTML = "/generated/html/"
+makeByteStringPath name dir = encodeUtf8 path
+  where path = T.concat [getFormsPath dir, T.toLower name]
 
 
 -- creates a compiled Splice from a template

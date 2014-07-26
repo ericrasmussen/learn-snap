@@ -21,8 +21,7 @@ Flag old-base
 Executable learnsnap
   hs-source-dirs: src,
                   src/demos/forms,
-                  src/demos/interpreted,
-                  src/demos/compiled,
+                  src/demos/templates,
                   src/demos/utils
   main-is: Main.hs
 

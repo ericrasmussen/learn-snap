@@ -2,6 +2,7 @@ import Data.Char (toLower)
 import Control.Applicative ((<$>))
 import System.FilePath ( (</>)
                        , combine
+                       , addExtension
                        , takeExtension
                        , replaceExtension
                        , splitDirectories
@@ -64,14 +65,20 @@ highlightFiles path ext destination = do
 
 -- finds all the tpl files in the given path, creates syntax highlighted
 -- snippets from each, and creates one big snippet with all the parts delimited
--- by the individual tpl names
+-- by the individual tpl names. The resulting file will be placed in the
+-- `destination` folder, and its name will be determined by the last folder in
+-- `path`.
+-- Example: highlightGroup "foo/bar" "foo/templates" will create a new file
+-- foo/templates/bar.tpl that contains all of the syntax higlighted templates
+-- from foo/bar/*.tpl.
 highlightGroup :: String -> String -> IO ()
 highlightGroup path destination = do
   let tplName   = formatTplName path
   files         <- getSourceFiles path ".tpl"
   highlighted   <- mapM (highlightWithHeader tplName . combine path) files
   let composite =  concat highlighted
-  writeFile destination composite
+  let outFile   = destination </> (addExtension tplName ".tpl")
+  writeFile outFile composite
 
 highlightWithHeader :: String -> String -> IO String
 highlightWithHeader dirName path = do
@@ -90,15 +97,26 @@ formatTplName path = map toLower dirName
 
 
 -- preprocess all the relevant hs and tpl files
+-- a potential TODO is creating a separate type for arguments to the two
+-- highlighting functions, along the lines of:
+-- data HighlightTask {
+--   source :: FilePath
+--   ext    :: Maybe String
+--   dest   :: FilePath
+--   group  :: Bool
+-- }
+-- Then we can simplify the logging part, avoid calling everything directly
+-- in main, and possibly build up those structures from command line args or
+-- a config file.
 main = do
   putStrLn "creating tpl files from src/demos/forms/*.hs"
-  highlightFiles "src/demos/forms" ".hs" "snaplets/heist/generated/code"
+  highlightFiles "src/demos/forms" ".hs" "snaplets/heist/generated/code/forms"
 
   putStrLn "creating tpl files from snaplets/heist/forms/*.tpl"
-  highlightFiles "snaplets/heist/forms" ".tpl" "snaplets/heist/generated/html"
+  highlightFiles "snaplets/heist/forms" ".tpl" "snaplets/heist/generated/html/forms"
 
-  putStrLn "creating tpl files from src/demos/compiled/conditional/*.hs"
-  highlightFiles "src/demos/compiled/conditional" ".hs" "snaplets/heist/generated/code/demos"
+  putStrLn "creating tpl files from src/demos/templates/conditional.hs"
+  highlightFiles "src/demos/templates" ".hs" "snaplets/heist/generated/code/templates"
 
-  putStrLn "creating composite tpl file from snaplets/heist/conditional/text"
-  highlightGroup "snaplets/heist/conditional/text" "snaplets/heist/generated/html/demos/text.tpl"
+  putStrLn "creating composite tpl file from snaplets/heist/templates/conditional"
+  highlightGroup "snaplets/heist/templates/conditional" "snaplets/heist/generated/html/templates"

@@ -6,18 +6,13 @@ module Demos.Templates.Conditional
   ) where
 
 ------------------------------------------------------------------------------
-import           Control.Applicative
-import           Data.ByteString (ByteString)
 import qualified Data.Text as T
 import           Data.Monoid
-import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
-import           Snap.Snaplet.Session.Backends.CookieSession
-import           Snap.Util.FileServe
 import           Heist
 import qualified Heist.Compiled as C
-import qualified Heist.Compiled.LowLevel as LL
+
 ------------------------------------------------------------------------------
 import           Application
 import           Demos.Utils.Templates (makeTemplateSplices)
@@ -92,5 +87,4 @@ conditionalSplices = mconcat [ tutorialSplices
 -- * Create a handler to render the Heist template
 
 conditionalHandler :: Handler App App ()
--- TODO: still fix this
-conditionalHandler = cRender "conditional/text/condtext"
+conditionalHandler = cRender "templates/conditional/conditional"

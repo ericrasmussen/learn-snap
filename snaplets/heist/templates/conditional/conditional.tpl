@@ -34,6 +34,6 @@
     </tbody>
   </table>
 
-  <condTextTabs/>
+  <conditionalTabs/>
 
 </apply>

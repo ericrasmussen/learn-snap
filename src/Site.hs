@@ -27,7 +27,7 @@ import           Demos.Forms.Password  (passwordHandler,  passwordSplices)
 import           Demos.Forms.Combo     (comboHandler,     comboSplices)
 ------------------------------------------------------------------------------
 import           Demos.Templates.Conditional ( conditionalHandler
-                                             , condTextSplices)
+                                             , conditionalSplices)
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, AppHandler ())]
@@ -54,7 +54,7 @@ allCompiledSplices = mconcat [ textInputSplices
                              , textAreaSplices
                              , passwordSplices
                              , comboSplices
-                             , condTextSplices
+                             , conditionalSplices
                              ]
 
 ------------------------------------------------------------------------------
