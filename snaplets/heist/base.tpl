@@ -67,7 +67,7 @@
 
       <h5>Compiled Heist</h5>
       <ul class="side-nav">
-        <li><a href="/compiled/conditional/text">Conditional Text</a></li>
+        <li><a href="/templates/conditional">Conditional Text</a></li>
       </ul>
 
     </aside>

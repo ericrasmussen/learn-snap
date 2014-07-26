@@ -42,7 +42,7 @@ routes = [ ("/", indexHandler)
          , ("/forms/password",  passwordHandler)
          , ("/forms/combo",     comboHandler)
          -- compiled heist demos
-         , ("/compiled/conditional/text", conditionalHandler)
+         , ("/templates/conditional", conditionalHandler)
          -- static assets
          , ("assets", serveDirectory "assets")
          ]
