@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Demos.Compiled.Conditional.Text
+module Demos.Templates.Conditional
   ( conditionalHandler
-  , condTextSplices
+  , conditionalSplices
   ) where
 
 ------------------------------------------------------------------------------
@@ -83,13 +83,14 @@ tutorialSplices = applyS tutorialA splicesA `mappend` applyS tutorialB splicesB
 -- * Create compiled Heist splices to export
 
 -- takes the splices defined above and `mconcat`s them with display tab splices
-condTextSplices :: Monad m => Splices (C.Splice m)
-condTextSplices = mconcat [ tutorialSplices
-                          , makeTemplateSplices "text" "condTextTabs"
-                          ]
+conditionalSplices :: Monad m => Splices (C.Splice m)
+conditionalSplices = mconcat [ tutorialSplices
+                             , makeTemplateSplices "conditional" "conditionalTabs"
+                             ]
 
 --------------------------------------------------------------------------------
 -- * Create a handler to render the Heist template
 
 conditionalHandler :: Handler App App ()
+-- TODO: still fix this
 conditionalHandler = cRender "conditional/text/condtext"

@@ -26,8 +26,8 @@ import           Demos.Forms.TextArea  (textAreaHandler,  textAreaSplices)
 import           Demos.Forms.Password  (passwordHandler,  passwordSplices)
 import           Demos.Forms.Combo     (comboHandler,     comboSplices)
 ------------------------------------------------------------------------------
-import           Demos.Compiled.Conditional.Text ( conditionalHandler
-                                                 , condTextSplices)
+import           Demos.Templates.Conditional ( conditionalHandler
+                                             , condTextSplices)
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, AppHandler ())]
