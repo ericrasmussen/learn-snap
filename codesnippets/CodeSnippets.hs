@@ -14,7 +14,6 @@ import Text.Blaze.Html.Renderer.String
 
 --------------------------------------------------------------------------------
 
-
 -- filters a list of FilePaths by extension (ex: ".hs"; leading dot required)
 filterExt :: String -> [FilePath] -> [FilePath]
 filterExt ext = filter (\path -> takeExtension path == ext)
@@ -71,10 +70,10 @@ highlightFiles path ext destination = do
 -- Example: highlightGroup "foo/bar" "foo/templates" will create a new file
 -- foo/templates/bar.tpl that contains all of the syntax higlighted templates
 -- from foo/bar/*.tpl.
-highlightGroup :: String -> String -> IO ()
-highlightGroup path destination = do
+highlightGroup :: String -> String -> String -> IO ()
+highlightGroup path ext destination = do
   let tplName   = formatTplName path
-  files         <- getSourceFiles path ".tpl"
+  files         <- getSourceFiles path ext
   highlighted   <- mapM (highlightWithHeader tplName . combine path) files
   let composite =  concat highlighted
   let outFile   = destination </> (addExtension tplName ".tpl")
@@ -96,37 +95,60 @@ formatTplName path = map toLower dirName
   where dirName = last . splitDirectories $ path
 
 
+
+------------------------------------------------------------------------------
+-- * All of the source/destination mappings for files to be highlighted
+
+-- It's convenient to hardcode the paths for now (they're still all in one place
+-- and easy to manage for as few as we have), but at some point we may want
+-- to move these to a config file or have this programmer take the mappings
+-- as command line args.
+data HighlightTask = HT {
+    src   :: FilePath
+  , ext   :: String
+  , dest  :: FilePath
+  , group :: Bool
+}
+
+-- creates a HighlightTask record after adding the shared prefix to the dest dir
+makeHT :: FilePath -> String -> FilePath -> Bool -> HighlightTask
+makeHT s e d g = HT s e (prefixGenDir d) g
+
+prefixTpl :: FilePath -> FilePath
+prefixTpl path = "snaplets/heist/templates" </> path
+
+prefixGenDir :: FilePath -> FilePath
+prefixGenDir path = "snaplets/heist/generated" </> path
+
+-- all the mappings we use currently
+highlightMappings :: [HighlightTask]
+highlightMappings = [
+  -- source code for the form demos
+    makeHT "src/demos/forms"            ".hs"  "code/forms"     False
+  -- source code for the template demos
+  , makeHT "src/demos/templates"        ".hs"  "code/templates" False
+  -- source tpl for the form demos
+  , makeHT "snaplets/heist/forms"       ".tpl" "html/forms"     False
+  -- source tpl dirs for the composite template demos
+  , makeHT (prefixTpl "conditional")    ".tpl" "html/templates" True
+  , makeHT (prefixTpl "multiple")       ".tpl" "html/templates" True
+  , makeHT (prefixTpl "runtime")        ".tpl" "html/templates" True
+  , makeHT (prefixTpl "loop")           ".tpl" "html/templates" True
+  ]
+
+-- highlight files or groups
+processTask :: HighlightTask -> IO ()
+processTask ht = case group ht of
+  False -> highlightFiles (src ht) (ext ht) (dest ht)
+  True  -> highlightGroup (src ht) (ext ht) (dest ht)
+
+-- really terrible ad hoc printing of highlight tasks, for use before processing
+logTask :: HighlightTask -> IO ()
+logTask ht = putStrLn $ concat [ "creating tpl files from "
+                               , src ht
+                               , "/*"
+                               , ext ht
+                               ]
+
 -- preprocess all the relevant hs and tpl files
--- a potential TODO is creating a separate type for arguments to the two
--- highlighting functions, along the lines of:
--- data HighlightTask {
---   source :: FilePath
---   ext    :: Maybe String
---   dest   :: FilePath
---   group  :: Bool
--- }
--- Then we can simplify the logging part, avoid calling everything directly
--- in main, and possibly build up those structures from command line args or
--- a config file.
-main = do
-  putStrLn "creating tpl files from src/demos/forms/*.hs"
-  highlightFiles "src/demos/forms" ".hs" "snaplets/heist/generated/code/forms"
-
-  putStrLn "creating tpl files from snaplets/heist/forms/*.tpl"
-  highlightFiles "snaplets/heist/forms" ".tpl" "snaplets/heist/generated/html/forms"
-
-  putStrLn "creating tpl files from src/demos/templates/conditional.hs"
-  highlightFiles "src/demos/templates" ".hs" "snaplets/heist/generated/code/templates"
-
-  putStrLn "creating composite tpl file from snaplets/heist/templates/conditional"
-  highlightGroup "snaplets/heist/templates/conditional" "snaplets/heist/generated/html/templates"
-
-  putStrLn "creating composite tpl file from snaplets/heist/templates/multiple"
-  highlightGroup "snaplets/heist/templates/multiple" "snaplets/heist/generated/html/templates"
-
-  putStrLn "creating composite tpl file from snaplets/heist/templates/runtime"
-  highlightGroup "snaplets/heist/templates/runtime" "snaplets/heist/generated/html/templates"
-
-  putStrLn "creating composite tpl file from snaplets/heist/templates/loop"
-  highlightGroup "snaplets/heist/templates/loop" "snaplets/heist/generated/html/templates"
-
+main = mapM_ (\h -> logTask h >> processTask h) highlightMappings
