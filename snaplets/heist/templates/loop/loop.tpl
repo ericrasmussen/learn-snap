@@ -3,32 +3,29 @@
   <h2>Looping</h2>
 
   <p>
-    This table is rendered by mapping over a list of Tutorials to create a list of
-    splices. See src/handlers/Loop.hs for details.
+    Repeats a snippet once for each color in our list (red, green, blue).
   </p>
 
   <table>
     <thead>
       <tr>
-        <th>Title</th>
-        <th>Author</th>
+        <th>Name</th>
+        <th>Sample</th>
       </tr>
     </thead>
     <tbody>
 
-
-      <allTutorials>
+      <primaryColors>
 
         <tr>
           <td>
-            <a href="${tutorialURL}"><tutorialTitle/></a>
+            <colorName/>
           </td>
-          <td>
-            <tutorialAuthor/>
+          <td style="background-color:${colorHex};">
           </td>
         </tr>
 
-      </allTutorials>
+      </primaryColors>
 
     </tbody>
   </table>

@@ -9,111 +9,71 @@ module Demos.Templates.Loop
 
 ------------------------------------------------------------------------------
 import           Data.Monoid
+import           Data.Text (Text)
 import qualified Data.Text as T
 import           Snap.Snaplet (Handler)
 import           Snap.Snaplet.Heist
 import           Heist
 import qualified Heist.Compiled as C
-import           Control.Monad
-import           Control.Monad.Trans
-import           Control.Monad.Trans.State (get, StateT, StateT(..))
 ------------------------------------------------------------------------------
 import           Application
 import           Demos.Utils.Templates (makeTemplateSplices)
 --------------------------------------------------------------------------------
 
--- simple data type for Tutorials
-data Tutorial = Tutorial {
-    title  :: T.Text
-  , url    :: T.Text
-  , author :: Maybe T.Text
-  }
 
--- the full Tutorial list is available here as a constant, but in our handlers
--- we could retrieve the list from a database or other source instead.
-tutorials :: [Tutorial]
-tutorials = [
-    Tutorial {
-        title  = "Heist Template Tutorial"
-      , url    = "http://snapframework.com/docs/tutorials/heist"
-      , author = Nothing
-      }
-  , Tutorial {
-        title  = "Compiled Splices Tutorial"
-      , url    = "http://snapframework.com/docs/tutorials/compiled-splices"
-      , author = Nothing
-      }
-  , Tutorial {
-        title  = "Attribute Splices Tutorial"
-      , url    = "http://snapframework.com/docs/tutorials/attribute-splices"
-      , author = Nothing
-      }
-  , Tutorial {
-        title  = "Views, Controllers, and Heist"
-      , url    = "http://softwaresimply.blogspot.com/2011/04/views-controllers-and-heist.html"
-      , author = Just "mightybyte"
-      }
-  , Tutorial {
-        title  = "Looping and Control Flow in Heist"
-      , url    = "http://softwaresimply.blogspot.com/2011/04/looping-and-control-flow-in-heist.html"
-      , author = Just "mightybyte"
-      }
-  , Tutorial {
-        title = "Compiled Heist insight, with no Snap in sight"
-      , url = "https://www.fpcomplete.com/school/to-infinity-and-beyond/older-but-still-interesting/compiled-heist-insight-with-no-snap-in-sight"
-      , author = Just "Daniel Diaz Carrete"
-      }
-  ]
+-- -----------------------------------------------------------------------------
+-- * Define your data
 
---------------------------------------------------------------------------------
--- * A handler to demonstrate rendering a list of Tutorial, where the author
--- record may or may not be present.
+data Color = Red | Green | Blue
+  deriving (Show, Enum)
 
--- | This is the Snap Handler that will be associated with a route in
--- src/Site.hs. Note that unlike the interpreted Loop module, we can't bind
--- splices at render time. Instead, they're part of the Heist config when the
--- Heist Snaplet is initiated. See src/Site.hs for details.
-loopHandler :: Handler App App ()
-loopHandler = cRender "templates/loop/loop"
 
--- | Top level splice that will render a list of tutorials
-allTutorialSplices :: Monad n => Splices (C.Splice n)
-allTutorialSplices =
-  "allTutorials" ## (renderTutorials tutorialsRuntime)
+-- -----------------------------------------------------------------------------
+-- * Provide functions to render your data as Text
 
--- | There is no equivalent for this in the interpreted Loop example, where we
--- can more easily work with the Tutorial list directly. The purpose of this
--- function is to create a RuntimeSplice with the Tutorial list so we can work
--- it using compiled Heist functions.
--- Note: you could use any monad here, including IO (or a monad transformer with
--- an IO base) so you could retrieve these from a database, a file, or some
--- other source.
-tutorialsRuntime :: Monad n => RuntimeSplice n [Tutorial]
-tutorialsRuntime = return tutorials
+toText :: Color -> Text
+toText = T.pack . show
 
--- | This function maps over a RuntimeSplice with a list of Tutorials, runs it
--- against the inner nodes of the current node, and creates a splice containing
--- all the rendered inner nodes for each Tutorial
-renderTutorials :: Monad n => RuntimeSplice n [Tutorial] -> C.Splice n
-renderTutorials = C.manyWithSplices C.runChildren splicesFromTutorial
+toHex :: Color -> Text
+toHex Red   = "#C40233"
+toHex Green = "#009F6B"
+toHex Blue  = "#0087BD"
 
--- | Creates a compiled splice from a single Tutorial
-splicesFromTutorial :: Monad n => Splices (RuntimeSplice n Tutorial -> C.Splice n)
-splicesFromTutorial = mapS (C.pureSplice . C.textSplice) $ do
-  "tutorialTitle"  ## title
-  "tutorialURL"    ## url
-  "tutorialAuthor" ## maybeAuthor
+-- -----------------------------------------------------------------------------
+-- * Functions for creating and working with RuntimeSplices
 
--- | Returns conditional Text based on whether or not we know the tutorial's
--- author
-maybeAuthor :: Tutorial -> T.Text
-maybeAuthor t = case author t of
-  Nothing -> ""
-  Just a  -> a
+colorsRuntime :: Monad n => RuntimeSplice n [Color]
+colorsRuntime = return [Red .. Blue]
 
+renderColors :: Monad n => RuntimeSplice n [Color] -> C.Splice n
+renderColors = C.manyWithSplices C.runChildren splicesFromColor
+
+-- -----------------------------------------------------------------------------
+-- * Create splices for our colors
+
+-- this will bind a list of color splices (wrapped in a RuntimeSplice) to the
+-- node <primaryColors/>
+colorSplices :: Monad n => Splices (C.Splice n)
+colorSplices = "primaryColors" ## renderColors colorsRuntime
+
+-- this will bind the <colorName/> and <colorHex/> splices for a single color
+splicesFromColor :: Monad n => Splices (RuntimeSplice n Color -> C.Splice n)
+splicesFromColor = mapS (C.pureSplice . C.textSplice) $ do
+  "colorName" ## toText
+  "colorHex"  ## toHex
+
+
+-- -----------------------------------------------------------------------------
+-- * Create compiled Heist splices to export
 
 -- takes the splices defined above and `mconcat`s them with display tab splices
 loopSplices :: Monad m => Splices (C.Splice m)
-loopSplices = mconcat [ allTutorialSplices
+loopSplices = mconcat [ colorSplices
                       , makeTemplateSplices "loop" "loopTabs"
                       ]
+
+-- -----------------------------------------------------------------------------
+-- * Create a handler to render the Heist template
+
+loopHandler :: Handler App App ()
+loopHandler = cRender "templates/loop/loop"
