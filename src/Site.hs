@@ -30,6 +30,8 @@ import           Demos.Templates.Conditional ( conditionalHandler
                                              , conditionalSplices)
 import           Demos.Templates.Multiple ( multipleHandler
                                           , multipleSplices)
+import           Demos.Templates.Runtime ( runtimeHandler
+                                         , runtimeSplices)
 ------------------------------------------------------------------------------
 
 -- | The application's routes.
@@ -47,6 +49,7 @@ routes = [ ("/", indexHandler)
          -- compiled heist demos
          , ("/templates/conditional", conditionalHandler)
          , ("/templates/multiple",    multipleHandler)
+         , ("/templates/runtime",     runtimeHandler)
          -- static assets
          , ("assets", serveDirectory "assets")
          ]
@@ -60,6 +63,7 @@ allCompiledSplices = mconcat [ textInputSplices
                              , comboSplices
                              , conditionalSplices
                              , multipleSplices
+                             , runtimeSplices
                              ]
 
 ------------------------------------------------------------------------------

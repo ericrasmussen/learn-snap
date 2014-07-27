@@ -7,9 +7,9 @@
 -- module so you don't need to follow a bunch of imports in order to understand
 -- these examples.
 
-module Demos.Compiled.Conditional.Runtime
-  ( runtimeValueHandler
-  , allRuntimeValueSplices
+module Demos.Templates.Runtime
+  ( runtimeHandler
+  , runtimeSplices
   ) where
 
 ------------------------------------------------------------------------------
@@ -27,6 +27,7 @@ import qualified Heist.Compiled as C
 import qualified Heist.Compiled.LowLevel as LL
 ------------------------------------------------------------------------------
 import           Application
+import           Demos.Utils.Templates (makeTemplateSplices)
 --------------------------------------------------------------------------------
 
 -- simple data type for Tutorials that may or may not have an author
@@ -65,8 +66,8 @@ runtimeB :: Monad n => RuntimeSplice n (Maybe T.Text)
 runtimeB = return Nothing
 
 -- | Renders the template using any splices in our HeistConfig
-runtimeValueHandler :: Handler App App ()
-runtimeValueHandler = cRender "conditional/runtime"
+runtimeHandler :: Handler App App ()
+runtimeHandler = cRender "templates/runtime/runtime"
 
 -- | The top level splices we export to our HeistConfig
 allRuntimeValueSplices :: Monad n => Splices (C.Splice n)
@@ -116,3 +117,8 @@ getValueSplice = C.withSplices template local
   where template = C.callTemplate "just_value"
         local    = "value" ## C.pureSplice . C.textSplice $ id
 
+-- takes the splices defined above and `mconcat`s them with display tab splices
+runtimeSplices :: Monad m => Splices (C.Splice m)
+runtimeSplices = mconcat [ allRuntimeValueSplices
+                         , makeTemplateSplices "runtime" "runtimeTabs"
+                         ]
