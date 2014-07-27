@@ -28,10 +28,12 @@ import           Demos.Forms.Combo     (comboHandler,     comboSplices)
 ------------------------------------------------------------------------------
 import           Demos.Templates.Conditional ( conditionalHandler
                                              , conditionalSplices)
-import           Demos.Templates.Multiple ( multipleHandler
-                                          , multipleSplices)
-import           Demos.Templates.Runtime ( runtimeHandler
-                                         , runtimeSplices)
+import           Demos.Templates.Multiple    ( multipleHandler
+                                             , multipleSplices)
+import           Demos.Templates.Runtime     ( runtimeHandler
+                                             , runtimeSplices)
+import           Demos.Templates.Loop        ( loopHandler
+                                             , loopSplices)
 ------------------------------------------------------------------------------
 
 -- | The application's routes.
@@ -50,6 +52,7 @@ routes = [ ("/", indexHandler)
          , ("/templates/conditional", conditionalHandler)
          , ("/templates/multiple",    multipleHandler)
          , ("/templates/runtime",     runtimeHandler)
+         , ("/templates/loop",        loopHandler)
          -- static assets
          , ("assets", serveDirectory "assets")
          ]
@@ -64,6 +67,7 @@ allCompiledSplices = mconcat [ textInputSplices
                              , conditionalSplices
                              , multipleSplices
                              , runtimeSplices
+                             , loopSplices
                              ]
 
 ------------------------------------------------------------------------------

@@ -127,3 +127,6 @@ main = do
   putStrLn "creating composite tpl file from snaplets/heist/templates/runtime"
   highlightGroup "snaplets/heist/templates/runtime" "snaplets/heist/generated/html/templates"
 
+  putStrLn "creating composite tpl file from snaplets/heist/templates/loop"
+  highlightGroup "snaplets/heist/templates/loop" "snaplets/heist/generated/html/templates"
+
