@@ -2,7 +2,11 @@
 
   <h2>Compiled Runtime Values</h2>
 
-  <p>Something something something</p>
+  <p>
+    Queries a fake Fizzbuzz Service (returning IO (Maybe Text)) for each Int in
+    a range of Ints, inspects the returned value, and chooses nothing.tpl in the
+    Nothing case and just_value.tpl in the Just case.
+  </p>
 
   <table>
     <thead>
@@ -28,8 +32,6 @@
 
     </tbody>
   </table>
-
-  <idk/>
 
   <runtimeTabs/>
 
