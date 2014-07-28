@@ -1,11 +1,35 @@
-<ignore>
-  This template will render _runtime.tpl with the splices passed to it in
-  src/handlers/ConditionalCompiled.hs. The result will then be inserted into base.tpl.
-</ignore>
-
 <apply template="base">
 
-  <apply template="_runtime"/>
+  <h2>Compiled Runtime Values</h2>
+
+  <p>Something something something</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Index</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <fizzbuzzes>
+
+        <tr>
+          <td>
+            <fizzIndex/>
+          </td>
+          <td>
+            <maybeFizzValue/>
+          </td>
+        </tr>
+
+      </fizzbuzzes>
+
+    </tbody>
+  </table>
+
+  <idk/>
 
   <runtimeTabs/>
 

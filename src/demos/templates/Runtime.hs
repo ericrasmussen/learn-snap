@@ -13,15 +13,12 @@ module Demos.Templates.Runtime
   ) where
 
 ------------------------------------------------------------------------------
-import           Control.Applicative
-import           Data.ByteString (ByteString)
+import           Data.Text (Text)
 import qualified Data.Text as T
 import           Data.Monoid
-import           Snap.Core
+import           Control.Monad.IO.Class (liftIO)
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
-import           Snap.Snaplet.Session.Backends.CookieSession
-import           Snap.Util.FileServe
 import           Heist
 import qualified Heist.Compiled as C
 import qualified Heist.Compiled.LowLevel as LL
@@ -30,88 +27,63 @@ import           Application
 import           Demos.Utils.Templates (makeTemplateSplices)
 --------------------------------------------------------------------------------
 
--- simple data type for Tutorials that may or may not have an author
-data Tutorial = Tutorial {
-    title  :: T.Text
-  , url    :: T.Text
-  , author :: Maybe T.Text
-  }
 
--- unlike the interpreted version, we want values of Tutorial elevated to
--- RuntimeSplice n Tutorial so they can be passed in to compiled splices. We
--- could use this same pattern for values pulled from a database or other source
-tutorialA :: Monad n => RuntimeSplice n Tutorial
-tutorialA = return Tutorial {
-    title  = "Heist Template Tutorial"
-  , url    = "http://snapframework.com/docs/tutorials/heist"
-  , author = Nothing
-  }
+data Fizzbuzz = Fizzbuzz {
+    index      :: Int
+  , maybeFizzy :: Maybe Text
+}
 
-tutorialB :: Monad n => RuntimeSplice n Tutorial
-tutorialB = return Tutorial {
-    title  = "Looping and Control Flow in Heist"
-  , url    = "http://softwaresimply.blogspot.com/2011/04/looping-and-control-flow-in-heist.html"
-  , author = Just "mightybyte"
-  }
+fizzIntText :: Fizzbuzz -> Text
+fizzIntText = T.pack . show . index
 
---------------------------------------------------------------------------------
--- * Similar the conditional template handler, but showing how to inspect a
--- runtime value.
+fizzbuzzService :: Int -> IO (Maybe Text)
+fizzbuzzService = return . maybeFizzy
+  where maybeFizzy n | n `mod` 15 == 0 = Just "fizzbuzz"
+                     | n `mod` 5  == 0 = Just "buzz"
+                     | n `mod` 3  == 0 = Just "fizz"
+                     | otherwise       = Nothing
 
--- | Elevating Maybe Text values to RuntimeSplice values
-runtimeA :: Monad n => RuntimeSplice n (Maybe T.Text)
-runtimeA = return $ Just "a value"
 
-runtimeB :: Monad n => RuntimeSplice n (Maybe T.Text)
-runtimeB = return Nothing
+-- fun TODO: make a fake fizzbuzz service instead to show how you can add IO
+-- to the type when deciding what to do with a runtime value
+fizzbuzzes :: [Fizzbuzz]
+fizzbuzzes = map (\x -> Fizzbuzz x  (mkFizzbuzz x)) [1..]
+  where mkFizzbuzz n | n `mod` 15 == 0 = Just "fizzbuzz"
+                     | n `mod` 5  == 0 = Just "buzz"
+                     | n `mod` 3  == 0 = Just "fizz"
+                     | otherwise       = Nothing
 
--- | Renders the template using any splices in our HeistConfig
-runtimeHandler :: Handler App App ()
-runtimeHandler = cRender "templates/runtime/runtime"
+fizzRuntimes :: Monad n => RuntimeSplice n [Fizzbuzz]
+fizzRuntimes = return $ take 10 fizzbuzzes
 
--- | The top level splices we export to our HeistConfig
-allRuntimeValueSplices :: Monad n => Splices (C.Splice n)
-allRuntimeValueSplices = do
-  "runtimeA" ## runtimeValue runtimeA
-  "runtimeB" ## runtimeValue runtimeB
+renderFizzes :: Monad n => RuntimeSplice n [Fizzbuzz] -> C.Splice n
+renderFizzes = C.manyWithSplices C.runChildren splicesFromFizz
 
--- | Inspects a runtime value in order to decide which template to render
-runtimeValue :: Monad n => RuntimeSplice n (Maybe T.Text) -> C.Splice n
+
+fizzSplices :: Monad n => Splices (C.Splice n)
+fizzSplices = "fizzbuzzes" ## renderFizzes fizzRuntimes
+
+splicesFromFizz :: Monad n => Splices (RuntimeSplice n Fizzbuzz -> C.Splice n)
+splicesFromFizz = do
+  "fizzIndex"      ## (C.pureSplice . C.textSplice) fizzIntText
+  "maybeFizzValue" ## runtimeValue
+
+runtimeValue :: Monad n => RuntimeSplice n Fizzbuzz -> C.Splice n
 runtimeValue runtime = do
-  -- a compiled splice for a static template (will be used in the Nothing case)
   nothing     <- C.callTemplate "nothing"
-
-  -- create a new empty promise that can be filled in with a Text value
   promise     <- LL.newEmptyPromise
-
-  -- instead of passing the RuntimeSplice directly to valueSplice, we pass in
-  -- a function capable of getting the value out of a promise
   valueSplice <- getValueSplice (LL.getPromise promise)
-
-  -- The 'do' block below has a value of type:
-  --   RuntimeSplice n Builder -> DList (Chunk n)
-  --
-  -- This lets us extract the underlying value (Maybe Text) from the runtime
   let builder = C.yieldRuntime $ do
         value <- runtime
-        case value of
-          -- in the Nothing case we convert the template splice to a builder
+        --isFizzy <- liftIO $ fizzbuzzService (index value)
+        case maybeFizzy value of
+        --case isFizzy of
           Nothing -> C.codeGen nothing
-          -- in the Just case we put the extracted Text value in a promise
-          -- first, then convert the compiled value splice to a builder
           Just v  -> do
             LL.putPromise promise v
             C.codeGen valueSplice
-
-  -- our builder has the type DList (Chunk n), and remember that:
-  --   type Splice n = HeistT n IO (DList (Chunk n))
-  -- so returning this value to the current monad finally creates the fully
-  -- compiled splice we needed
   return builder
 
--- | Note that here we take a runtime Text value, *not* Maybe Text. At this
--- point we know we have a value so we can bind it to a local splice and call
--- a template expecting a <value/> node
 getValueSplice :: Monad n => RuntimeSplice n T.Text -> C.Splice n
 getValueSplice = C.withSplices template local
   where template = C.callTemplate "just_value"
@@ -119,6 +91,11 @@ getValueSplice = C.withSplices template local
 
 -- takes the splices defined above and `mconcat`s them with display tab splices
 runtimeSplices :: Monad m => Splices (C.Splice m)
-runtimeSplices = mconcat [ allRuntimeValueSplices
+runtimeSplices = mconcat [ fizzSplices
                          , makeTemplateSplices "runtime" "runtimeTabs"
                          ]
+
+
+-- | Renders the template using any splices in our HeistConfig
+runtimeHandler :: Handler App App ()
+runtimeHandler = cRender "templates/runtime/runtime"

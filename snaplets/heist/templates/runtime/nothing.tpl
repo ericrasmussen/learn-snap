@@ -1,3 +1,1 @@
-<p>
-  Sorry, the value we found was: Nothing
-</p>
+<i>Nothing</i>

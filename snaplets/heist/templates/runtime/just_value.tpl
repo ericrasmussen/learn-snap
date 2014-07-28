@@ -1,3 +1,1 @@
-<p>
-  The value we found was: <i>Just</i> &quot;<value/>&quot;
-</p>
+<i>Just</i> &quot;<value/>&quot;
