@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings, NoMonomorphismRestriction #-}
+
 ------------------------------------------------------------------------------
--- | This module demonstrates how you can repeat a section of a template by
--- mapping splice functions across a list of resources.
 module Demos.Templates.Loop
   ( loopSplices
   , loopHandler
