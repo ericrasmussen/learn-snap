@@ -20,9 +20,9 @@ Flag old-base
 
 Executable learnsnap
   hs-source-dirs: src,
-                  src/demos/forms,
-                  src/demos/templates,
-                  src/demos/utils
+                  src/Demos/Forms,
+                  src/Demos/Templates,
+                  src/Demos/Utils
   main-is: Main.hs
 
   GHC-Options: -fwarn-unused-imports
@@ -48,11 +48,11 @@ Executable learnsnap
   if flag(old-base)
     build-depends:
       base                      >= 4        && < 4.4,
-      lens                      >= 3.7.6    && <= 4.2
+      lens                      >= 3.7.6    && <= 4.4
   else
     build-depends:
       base                      >= 4.4      && < 5,
-      lens                      >= 3.7.6    && <= 4.2
+      lens                      >= 3.7.6    && <= 4.4
 
   if flag(development)
     build-depends:
