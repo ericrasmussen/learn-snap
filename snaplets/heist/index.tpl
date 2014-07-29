@@ -49,7 +49,7 @@
     This site aims to fill that gap by providing interactive examples with
     inline, viewable source and templating code using Snap, Heist, and the
     digestive-functors library for HTML forms. You can even clone the site from
-    its <a href="https://github.com/ericrasmussen/digestive-heist-demos">
+    its <a href="https://github.com/ericrasmussen/learn-snap/">
     GitHub repo</a> to view, run, and modify the code locally as you learn Snap.
   </p>
 

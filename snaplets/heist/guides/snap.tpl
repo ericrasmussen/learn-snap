@@ -66,7 +66,7 @@
 
   <p>
     This site is built using Snap, and you can view all the code in its
-    <a href="https://github.com/ericrasmussen/digestive-heist-demos">
+    <a href="https://github.com/ericrasmussen/learn-snap/">
     GitHub repo</a>. After you see the basics and get a feel for what it can do,
     head on over to the <a href="http://snapframework.com/">official site</a>
     to find resources and docs on learning more.
