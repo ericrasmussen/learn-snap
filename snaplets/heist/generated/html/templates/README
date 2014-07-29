@@ -1,0 +1,3 @@
+Run the highlight-code-snippets executable to create html snippets of the form
+templates (with syntax highlighting) and place them in this folder as .tpl
+files.

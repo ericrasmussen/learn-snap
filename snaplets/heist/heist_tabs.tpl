@@ -4,7 +4,7 @@
   <div class="row">
 
     <dl class="tabs" data-tab>
-      <dd>
+      <dd class="active">
         <a href="#panel2-1">Code</a>
       </dd>
       <dd>
@@ -14,7 +14,7 @@
 
     <div class="tabs-content">
 
-      <div class="content codeblock" id="panel2-1">
+      <div class="content codeblock active" id="panel2-1">
         <demoCode/>
       </div>
 

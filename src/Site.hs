@@ -26,9 +26,16 @@ import           Demos.Forms.TextArea  (textAreaHandler,  textAreaSplices)
 import           Demos.Forms.Password  (passwordHandler,  passwordSplices)
 import           Demos.Forms.Combo     (comboHandler,     comboSplices)
 ------------------------------------------------------------------------------
-import           Demos.Compiled.Conditional.Text ( conditionalHandler
-                                                 , condTextSplices)
+import           Demos.Templates.Conditional ( conditionalHandler
+                                             , conditionalSplices)
+import           Demos.Templates.Multiple    ( multipleHandler
+                                             , multipleSplices)
+import           Demos.Templates.Runtime     ( runtimeHandler
+                                             , runtimeSplices)
+import           Demos.Templates.Loop        ( loopHandler
+                                             , loopSplices)
 ------------------------------------------------------------------------------
+
 -- | The application's routes.
 routes :: [(ByteString, AppHandler ())]
 routes = [ ("/", indexHandler)
@@ -42,7 +49,10 @@ routes = [ ("/", indexHandler)
          , ("/forms/password",  passwordHandler)
          , ("/forms/combo",     comboHandler)
          -- compiled heist demos
-         , ("/compiled/conditional/text", conditionalHandler)
+         , ("/templates/conditional", conditionalHandler)
+         , ("/templates/multiple",    multipleHandler)
+         , ("/templates/runtime",     runtimeHandler)
+         , ("/templates/loop",        loopHandler)
          -- static assets
          , ("assets", serveDirectory "assets")
          ]
@@ -54,7 +64,10 @@ allCompiledSplices = mconcat [ textInputSplices
                              , textAreaSplices
                              , passwordSplices
                              , comboSplices
-                             , condTextSplices
+                             , conditionalSplices
+                             , multipleSplices
+                             , runtimeSplices
+                             , loopSplices
                              ]
 
 ------------------------------------------------------------------------------

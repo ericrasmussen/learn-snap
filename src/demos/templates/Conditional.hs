@@ -1,23 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Demos.Compiled.Conditional.Text
+module Demos.Templates.Conditional
   ( conditionalHandler
-  , condTextSplices
+  , conditionalSplices
   ) where
 
 ------------------------------------------------------------------------------
-import           Control.Applicative
-import           Data.ByteString (ByteString)
 import qualified Data.Text as T
 import           Data.Monoid
-import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
-import           Snap.Snaplet.Session.Backends.CookieSession
-import           Snap.Util.FileServe
 import           Heist
 import qualified Heist.Compiled as C
-import qualified Heist.Compiled.LowLevel as LL
+import           Data.Maybe (fromMaybe)
 ------------------------------------------------------------------------------
 import           Application
 import           Demos.Utils.Templates (makeTemplateSplices)
@@ -34,9 +29,7 @@ data Tutorial = Tutorial {
 
 -- helper function to show the conditional case: having a credited author or not
 maybeAuthor :: Tutorial -> T.Text
-maybeAuthor t = case author t of
-  Nothing -> "no credited author"
-  Just a  -> a
+maybeAuthor = fromMaybe "no credited author" . author
 
 
 -- create two sample Tutorials
@@ -83,13 +76,17 @@ tutorialSplices = applyS tutorialA splicesA `mappend` applyS tutorialB splicesB
 -- * Create compiled Heist splices to export
 
 -- takes the splices defined above and `mconcat`s them with display tab splices
-condTextSplices :: Monad m => Splices (C.Splice m)
-condTextSplices = mconcat [ tutorialSplices
-                          , makeTemplateSplices "text" "condTextTabs"
-                          ]
+conditionalSplices :: Monad m => Splices (C.Splice m)
+conditionalSplices = mconcat [ tutorialSplices
+                             , makeTemplateSplices "conditional" "conditionalTabs"
+                             ]
 
 --------------------------------------------------------------------------------
 -- * Create a handler to render the Heist template
 
 conditionalHandler :: Handler App App ()
-conditionalHandler = cRender "conditional/text/condtext"
+conditionalHandler = cRender "templates/conditional/conditional"
+
+
+
+

@@ -2,6 +2,11 @@
 
   <h2>Conditional Text</h2>
 
+  <p>
+    Conditionally renders an author name or a default value in the "Author"
+    field of the table below.
+  </p>
+
   <table>
     <thead>
       <tr>
@@ -34,6 +39,6 @@
     </tbody>
   </table>
 
-  <condTextTabs/>
+  <conditionalTabs/>
 
 </apply>
