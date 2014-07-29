@@ -124,9 +124,9 @@ prefixGenDir path = "snaplets/heist/generated" </> path
 highlightMappings :: [HighlightTask]
 highlightMappings = [
   -- source code for the form demos
-    makeHT "src/demos/forms"            ".hs"  "code/forms"     False
+    makeHT "src/Demos/Forms"            ".hs"  "code/forms"     False
   -- source code for the template demos
-  , makeHT "src/demos/templates"        ".hs"  "code/templates" False
+  , makeHT "src/Demos/Templates"        ".hs"  "code/templates" False
   -- source tpl for the form demos
   , makeHT "snaplets/heist/forms"       ".tpl" "html/forms"     False
   -- source tpl dirs for the composite template demos
