@@ -1,8 +1,6 @@
 <apply template="base">
 
-  <img src="/assets/images/legos.jpg" alt="lego building blocks" />
-
-  <h3>Learning Snap</h3>
+  <h3><img src="/assets/images/haskell_logo.png" width=40 height=40 alt="haskell logo" /> Learning Snap</h3>
 
   <p>
     Learning a new web framework is hard. Period.
@@ -17,7 +15,7 @@
     and deployment options.
   </p>
 
-  <h3>The whole stack</h3>
+  <h3><img src="/assets/images/haskell_logo.png" width=40 height=40 alt="haskell logo" /> The whole stack</h3>
 
   <p>
     If you're coming to Haskell from another language, or coming to Haskell web
@@ -26,7 +24,7 @@
     you've been at it for years, no two frameworks or APIs are the same.
   </p>
 
-  <h3>Learning by example</h3>
+  <h3><img src="/assets/images/haskell_logo.png" width=40 height=40 alt="haskell logo" /> Learning by example</h3>
 
   <p>
     Everyone has their own learning style, and in the Haskell community it's
@@ -53,7 +51,7 @@
     GitHub repo</a> to view, run, and modify the code locally as you learn Snap.
   </p>
 
-  <h3>Leveling up</h3>
+  <h3><img src="/assets/images/haskell_logo.png" width=40 height=40 alt="haskell logo" /> Leveling up</h3>
 
   <p>
     Learning Snap will increase your ability to build and maintain web

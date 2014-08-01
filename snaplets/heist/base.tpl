@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Snap by Example</title>
+    <title>Learn Snap</title>
 
 
     <meta name="description" content="Form demos using the Digestive Functors library with Snap and Heist" />
@@ -24,12 +24,12 @@
     <div class="large-12 columns">
       <div class="nav-bar right">
        <ul class="button-group">
-         <li><a href="/guides/snap" class="button">Snap</a></li>
+         <li><a href="/guides/snap" class="button active">Snap</a></li>
          <li><a href="/guides/heist" class="button">Heist</a></li>
          <li><a href="/guides/forms" class="button">Forms</a></li>
         </ul>
       </div>
-      <h1><a href="/">Snap by Example</a></h1>
+      <h1><a href="/">Learn Snap</a></h1>
       <hr />
     </div>
   </div>
